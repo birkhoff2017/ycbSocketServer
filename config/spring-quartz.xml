@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--监听Card未使用数量小于100个时，取数量为n的明牌信息存储到数据库-->
+    <!--<bean id="randomCardDbTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">-->
+        <!--&lt;!&ndash; 调用的类 &ndash;&gt;-->
+        <!--<property name="targetObject">-->
+            <!--<ref bean="jobService"/>-->
+        <!--</property>-->
+        <!--&lt;!&ndash; 调用类中的方法 &ndash;&gt;-->
+        <!--<property name="targetMethod">-->
+            <!--<value>randomCardDb</value>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!-- 每天晚上11点执行，计算当天最新的收盘价 -->
+    <!--<bean id="updateUserCardRateValueTime" class="org.springframework.scheduling.quartz.CronTriggerBean">-->
+        <!--<property name="jobDetail">-->
+            <!--<ref bean="updateUserCardRateValueTask"/>-->
+        <!--</property>-->
+        <!--&lt;!&ndash; cron表达式 &ndash;&gt;-->
+        <!--<property name="cronExpression">-->
+            <!--<value>0 0 23 * * ?</value>-->
+        <!--</property>-->
+    <!--</bean>-->
+    <!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序  -->
+    <!--<bean id="startQuertz" lazy-init="false" autowire="no"-->
+          <!--class="org.springframework.scheduling.quartz.SchedulerFactoryBean">-->
+        <!--<property name="triggers">-->
+            <!--<list>-->
+                <!--<ref bean="updateUserCardRateValueTime"/>-->
+            <!--</list>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+</beans>

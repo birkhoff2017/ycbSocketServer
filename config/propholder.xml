@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+    <!--<context:component-scan base-package="com.zipeiyi.game.data"/>-->
+    <!-- 自动扫描组件 -->
+    <import resource="spring-quartz.xml"/>
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>/config/properties/settings.properties</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="serverInitializer" class="com.ycb.socket.netty.ServerInitializer" init-method="init">
+        <!--<property name="timeout" value="${app.channel.readtimeout}"/>-->
+        <property name="handlerDispatcher" ref="handlerDispatcher"/>
+    </bean>
+
+    <bean id="handlerDispatcher" class="com.ycb.socket.dispatcher.HandlerDispatcher">
+        <property name="messageExecutor">
+            <bean class="com.ycb.socket.domain.FiexThreadPoolExecutor" destroy-method="shutdown">
+                <constructor-arg value="${app.handler.pool.corePoolSize}"/>
+                <constructor-arg value="${app.handler.pool.maximumPoolSize}"/>
+                <constructor-arg value="${app.handler.pool.keepAliveSecond}"/>
+                <constructor-arg value="${app.handler.pool.name}"/>
+            </bean>
+        </property>
+        <property name="sleepTime" value="${app.handler.sleepTime}"/>
+        <property name="handlerMap" ref="gameHandlerMap"/>
+    </bean>
+
+    <bean id="gameHandlerMap" class="java.util.HashMap">
+        <constructor-arg>
+            <map>
+                <!--借出电池-->
+                <entry key="rent_confirm">
+                    <bean class="com.ycb.socket.handler.RentConfirmHandler"/>
+                </entry>
+                <!--归还电池-->
+                <entry key="return_back">
+                    <bean class="com.ycb.socket.handler.ReturnBackHandler"/>
+                </entry>
+                <!--开始充电-->
+                <entry key="battery_start">
+                    <bean class="com.ycb.socket.handler.BatteryStartHandler"/>
+                </entry>
+                <!--停止充电-->
+                <entry key="battery_stop">
+                    <bean class="com.ycb.socket.handler.BatteryStopHandler"/>
+                </entry>
+                <!--查询消息-->
+                <entry key="query_confirm">
+                    <bean class="com.ycb.socket.handler.QueryConfirmHandler"/>
+                </entry>
+                <!--心跳包-->
+                <entry key="heartbeat">
+                    <bean class="com.ycb.socket.handler.HeartBeatHandler"/>
+                </entry>
+                <!--设备信息同步请求接口-->
+                <entry key="login">
+                    <bean class="com.ycb.socket.handler.LoginHandler"/>
+                </entry>
+                <!--同步配置-->
+                <entry key="sync_setting">
+                    <bean class="com.ycb.socket.handler.SyncSettingHandler"/>
+                </entry>
+                <!--同步电池-->
+                <entry key="sync_battery">
+                    <bean class="com.ycb.socket.handler.SyncBatteryHandler"/>
+                </entry>
+                <!--槽位lock-->
+                <entry key="slot_lock">
+                    <bean class="com.ycb.socket.handler.SlotLockHandler"/>
+                </entry>
+                <!--解锁槽位-->
+                <entry key="slot_unlock">
+                    <bean class="com.ycb.socket.handler.SlotUnlockHandler"/>
+                </entry>
+                <!--人工借出反馈-->
+                <entry key="popup_confirm">
+                    <bean class="com.ycb.socket.handler.PopupConfirmHandler"/>
+                </entry>
+                <!--人工重启-->
+                <entry key="reboot">
+                    <bean class="com.ycb.socket.handler.RebootHandler"/>
+                </entry>
+                <!--升级控制-->
+                <entry key="upgrade_request_file">
+                    <bean class="com.ycb.socket.handler.UpgradeRequestFileHandler"/>
+                </entry>
+                <!--文件传输-->
+                <entry key="upgrade_request">
+                    <bean class="com.ycb.socket.handler.UpgradeRequestHandler"/>
+                </entry>
+                <!--设备升级结束确认-->
+                <entry key="upgrade_end">
+                    <bean class="com.ycb.socket.handler.UpgradeEndHandler"/>
+                </entry>
+                <!--设备log请求响应-->
+                <entry key="read_log">
+                    <bean class="com.ycb.socket.handler.ReadLogHandler"/>
+                </entry>
+                <!--设备主动发送log-->
+                <entry key="send_log">
+                    <bean class="com.ycb.socket.handler.SendLogHandler"/>
+                </entry>
+                <!--设备上传调试信息-->
+                <entry key="debug">
+                    <bean class="com.ycb.socket.handler.DebugHandler"/>
+                </entry>
+            </map>
+        </constructor-arg>
+    </bean>
+</beans>

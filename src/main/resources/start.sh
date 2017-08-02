@@ -1,0 +1,1 @@
+nohup java -Xms2g -Xmx4g -Xmn1024m -Xss256k -DZK_HOSTS=10.0.150.42:2181 -Djava.ext.dirs=lib -jar dataServer.jar 8000 >/dev/null &
