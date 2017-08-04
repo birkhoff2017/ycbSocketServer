@@ -115,7 +115,7 @@ public class HandlerDispatcher implements Runnable {
             } catch (Exception e) {
                 HandlerDispatcher.logger.error(ExceptionUtils.getStackTrace(e));
             } finally {
-                this.messageQueue.setRunning(false);
+                    this.messageQueue.setRunning(false);
             }
         }
     }

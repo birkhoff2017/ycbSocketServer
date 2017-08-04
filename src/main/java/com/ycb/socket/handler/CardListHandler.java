@@ -13,18 +13,6 @@ public class CardListHandler implements SocketHandler {
 
     @Override
     public void execute(MessageReq request, MessageRes response) throws ParseException {
-//        this.logger.info("[" + request.getCmd() + "] 游戏暗牌！");
-//        response.setModuleId(request.getModuleId());
-//        response.setCmd(request.getCmd());
-//        response.setSeque(request.getSeque());
-//        response.setUid(request.getUid());
-//        response.setMsg("游戏暗牌！");
-//        DBCardListReq req = (DBCardListReq) request.getObj();
-//        GameService gameService = NettyServerStart.factory.getBean(GameService.class);
-//        List<CardInfo> cardInfoList = gameService.getHideCard(req.getCardAmount());
-//
-//        DBCardListAck ack = new DBCardListAck();
-//        ack.setCardList(cardInfoList);
-//        response.setObj(ack);
+
     }
 }
