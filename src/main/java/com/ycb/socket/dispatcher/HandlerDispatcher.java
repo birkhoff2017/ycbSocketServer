@@ -111,11 +111,11 @@ public class HandlerDispatcher implements Runnable {
                 if (handler != null) {
                     handler.execute(this.request.getMessageReq(), res);
                 }
-                request.getChannel().writeAndFlush(res);
+                request.getChannel().writeAndFlush(res.getMsg());
             } catch (Exception e) {
                 HandlerDispatcher.logger.error(ExceptionUtils.getStackTrace(e));
             } finally {
-                    this.messageQueue.setRunning(false);
+                this.messageQueue.setRunning(false);
             }
         }
     }

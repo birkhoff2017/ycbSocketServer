@@ -37,13 +37,13 @@ public class ServerAdapter extends SimpleChannelInboundHandler<Object> {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         logger.error("ServerAdapter handler error,msg：" + cause.getMessage());
         ctx.close();
-        ChannelGroups.discard(ctx.channel());
+        //ChannelGroups.discard(ctx.channel());
     }
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         ctx.close();
-        ChannelGroups.discard(ctx.channel());
+        //ChannelGroups.discard(ctx.channel());
     }
 
 }

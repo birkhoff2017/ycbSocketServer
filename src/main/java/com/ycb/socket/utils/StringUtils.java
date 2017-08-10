@@ -1,8 +1,6 @@
 package com.ycb.socket.utils;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class StringUtils {
     public static List<String> splitToStringList(String str, String sepKey) {
@@ -70,4 +68,12 @@ public class StringUtils {
         return floatList;
     }
 
+    public static Map<String, String> str2Map(String str) {
+        String[] strArr = str.split(";");
+        Map<String, String> map = new HashMap<>();
+        for (String node : strArr) {
+            map.put(node.split(":")[0], node.split(":")[1]);
+        }
+        return map;
+    }
 }
