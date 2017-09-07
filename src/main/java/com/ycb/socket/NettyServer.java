@@ -3,6 +3,7 @@ package com.ycb.socket;
 import com.ycb.socket.netty.ServerInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -42,6 +43,7 @@ public class NettyServer {
         try {
             ServerBootstrap b = new ServerBootstrap()
                     .group(bossGroup, workerGroup)
+                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000)
                     .channel(NioServerSocketChannel.class)
                     .childHandler(this.initializer);
 

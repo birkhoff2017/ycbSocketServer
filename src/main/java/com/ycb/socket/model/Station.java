@@ -13,46 +13,36 @@ public class Station implements Serializable {
 
     private Long id;
 
-    //    @MetaData("Mac地址")
-    //    @Column(name = "mac")
+    // @MetaData("Mac地址")
     private String mac;
 
-    //    @MetaData("可借数")
-    //    @Column(name = "usable")
+    // @MetaData("可借数")
     private Integer usable;
 
-    //    @MetaData("可还数")
-    //    @Column(name = "empty")
+    // @MetaData("可还数")
     private Integer empty;
 
-    //    @MetaData("槽位状态")
-    //    @Column(name = "slotstatus")
+    // @MetaData("槽位状态")
     private String slotstatus;
 
     // "2:安卓苹果二合一线 3:TypeC线"
-    //    @MetaData("线类型")
-    //    @Column(name = "cable")
+    // @MetaData("线类型")
     private Integer cable;
 
-    //    @MetaData("设备名")
-    //    @Column(name = "title")
+    // @MetaData("设备名")
     private String title;
 
     // "0,1,2,31,32,10,11,12,13,14,15,20"
-    //    @MetaData("设备版本")
-    //    @Column(name = "device_ver")
+    // @MetaData("设备版本")
     private Integer deviceVer;
 
-    //    @MetaData("心跳率")
-    //    @Column(name = "heartbeat_rate")
+    // @MetaData("心跳率")
     private Integer heartbeatRate;
 
-    //    @MetaData("开机时长")
-    //    @Column(name = "power_on_time")
+    // @MetaData("开机时长")
     private Long powerOnTime;
 
-    //    @MetaData("同步时间")
-    //    @Column(name = "sync_time")
+    // @MetaData("同步时间")
     private Date syncTime;
 
     public Long getId() {

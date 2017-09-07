@@ -1,11 +1,23 @@
 package com.ycb.socket.handler;
 
+import com.ycb.socket.NettyServerStart;
 import com.ycb.socket.message.MessageReq;
 import com.ycb.socket.message.MessageRes;
+import com.ycb.socket.model.FeeStrategy;
+import com.ycb.socket.model.Order;
+import com.ycb.socket.service.BatteryService;
+import com.ycb.socket.service.FeeStrategyService;
+import com.ycb.socket.service.OrderService;
+import com.ycb.socket.service.UserService;
+import com.ycb.socket.utils.StringUtils;
+import com.ycb.socket.utils.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by zhuhui on 17-8-2.
@@ -15,6 +27,60 @@ public class ReturnBackHandler implements SocketHandler {
 
     @Override
     public void execute(MessageReq messageReq, MessageRes messageRes) throws ParseException {
-
+        try {
+            BatteryService batteryService = NettyServerStart.factory.getBean(BatteryService.class);
+            OrderService orderService = NettyServerStart.factory.getBean(OrderService.class);
+            UserService userService = NettyServerStart.factory.getBean(UserService.class);
+            FeeStrategyService feeStrategyService = NettyServerStart.factory.getBean(FeeStrategyService.class);
+            Map<String, String> reqMap = StringUtils.str2Map(messageReq.getContent());
+            // 根据电池ID检索电池表，新建数据
+            Boolean exist = batteryService.findByBatteryId(reqMap.get("ID"));
+            if (exist) {
+                // 租借时长
+                String lastTime = "";
+                // 产生费用
+                String useFeeStr = "0";
+                Long duration = 0l;
+                // 获取借出电池所属订单详情
+                Order borrowOrder = orderService.getPaidFromOrder(reqMap.get("ID"));
+                if (borrowOrder != null) {
+                    // 计算订单使用金额
+                    if (reqMap.get("TIME") == null) {
+                        duration = (new Date().getTime() - borrowOrder.getBorrowTime().getTime()) / 1000;
+                    } else {
+                        duration = Long.valueOf(reqMap.get("TIME")) - borrowOrder.getBorrowTime().getTime() / 1000;
+                    }
+                    FeeStrategy feeStrategy = feeStrategyService.getFeeStrategy(borrowOrder.getFeeSettings());
+                    BigDecimal usefee = feeStrategyService.calUseFee(feeStrategy, duration);
+                    BigDecimal refund = borrowOrder.getPaid().subtract(usefee);
+                    if (borrowOrder.getPaid().compareTo(usefee) < 0) {
+                        usefee = borrowOrder.getPaid();
+                        refund = BigDecimal.ZERO;
+                    }
+                    // 更新用户账户信息(归还成功，订单押金退还到余额)
+                    userService.updateUserFee(borrowOrder.getCustomerid(), borrowOrder.getPaid(), refund);
+                    lastTime = TimeUtil.timeToString(duration);
+                    useFeeStr = usefee + "元";
+                    // 推送归还成功消息
+                    orderService.sendReturnSuccessMessage(lastTime, useFeeStr, borrowOrder);
+                    // 更新订单信息 订单状态由借出->归还
+                    orderService.updateOrderFromRetrunback(reqMap, usefee);
+                }
+                // 更新电池表信息
+                batteryService.updateBatteryInfo(reqMap);
+            } else {
+                // 新增电池
+                batteryService.insertBatteryInfo(reqMap);
+            }
+            //电池归还指令值没有空槽数在机数，不能更新设备信息，待同步时去更新
+            //stationService.updateStationBatteryInfo(reqMap);
+            messageRes.setMsg("ERRCODE:0;ERRMSG:none" + ";ID:" + reqMap.get("ID") + ";ACK:" + messageReq.getActValue());
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            messageRes.setMsg("ERRCODE:0;ERRMSG:" + e.getMessage() + ";ACK:" + messageReq.getActValue());
+        } finally {
+            logger.info(messageReq.getContent());
+            logger.info(messageRes.getMsg());
+        }
     }
 }

@@ -18,7 +18,6 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
     }
 
     public void initChannel(SocketChannel ch) throws Exception {
-        //ChannelGroups.add(ch);
         ChannelPipeline pipeline = ch.pipeline();
         // 以("\n")为结尾分割的 解码器
         pipeline.addLast("framer", new DelimiterBasedFrameDecoder(Integer.MAX_VALUE, Delimiters.lineDelimiter()));

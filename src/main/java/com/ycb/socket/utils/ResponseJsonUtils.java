@@ -277,17 +277,17 @@ public class ResponseJsonUtils {
                     }
             }
         }
-        return replaceQualityColor(sb.toString());
+        return sb.toString();
     }
 
-    public static String replaceQualityColor(String str) {
-        str = str.replaceAll("#0#", "#ffffff");
-        str = str.replaceAll("#1#", "#009900");
-        str = str.replaceAll("#2#", "#0099ff");
-        str = str.replaceAll("#3#", "#9900ff");
-        str = str.replaceAll("#4#", "#ff9900");
-        str = str.replaceAll("#6#", "#9C661F");
-        return str;
-    }
+//    public static String replaceQualityColor(String str) {
+//        str = str.replaceAll("#0#", "#ffffff");
+//        str = str.replaceAll("#1#", "#009900");
+//        str = str.replaceAll("#2#", "#0099ff");
+//        str = str.replaceAll("#3#", "#9900ff");
+//        str = str.replaceAll("#4#", "#ff9900");
+//        str = str.replaceAll("#6#", "#9C661F");
+//        return str;
+//    }
 
 }

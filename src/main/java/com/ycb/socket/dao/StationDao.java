@@ -13,4 +13,10 @@ public interface StationDao {
     void updateStationInfo(Map<String, String> reqMap);
 
     void updateSyncSetting(Map<String, String> reqMap);
+
+    void updateStationBatteryInfo(Map<String, String> reqMap);
+
+    void updateStationFromBatterySync(Map<String, String> reqMap);
+
+    void updateNetStatusById(String stationid);
 }

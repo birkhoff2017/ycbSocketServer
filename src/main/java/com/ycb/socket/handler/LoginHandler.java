@@ -32,6 +32,8 @@ public class LoginHandler implements SocketHandler {
                 stationService.updateStationInfo(reqMap);
             }
             messageRes.setMsg("BINDADDRESS:" + sid + ";STATIONID:" + sid + ";");
+            logger.info(messageReq.getContent());
+            logger.info(messageRes.getMsg());
         } catch (Exception e) {
             logger.error(e.getMessage());
             messageRes.setMsg("ERRCODE:0;ERRMSG:" + e.getMessage() + ";ACK:" + messageReq.getActValue());

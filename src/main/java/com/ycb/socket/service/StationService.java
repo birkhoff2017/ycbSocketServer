@@ -5,6 +5,7 @@ import com.ycb.socket.dao.StationDao;
 import com.ycb.socket.dao.impl.StationDaoImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -16,23 +17,38 @@ import java.util.Map;
 public class StationService {
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
+    @Autowired
+    private StationDao stationDao;
+
     public Long getStationIdByMac(String mac) {
-        StationDao stationDao = NettyServerStart.factory.getBean(StationDaoImpl.class);
         return stationDao.getStationIdByMac(mac);
     }
 
     public Long insertNewStation(Map<String, String> reqMap) {
-        StationDao stationDao = NettyServerStart.factory.getBean(StationDaoImpl.class);
         return stationDao.insertNewStation(reqMap);
     }
 
     public void updateStationInfo(Map<String, String> reqMap) {
-        StationDao stationDao = NettyServerStart.factory.getBean(StationDaoImpl.class);
         stationDao.updateStationInfo(reqMap);
     }
 
     public void updateSyncSetting(Map<String, String> reqMap) {
-        StationDao stationDao = NettyServerStart.factory.getBean(StationDaoImpl.class);
         stationDao.updateSyncSetting(reqMap);
+    }
+
+    public void updateStationBatteryInfo(Map<String, String> reqMap) {
+        stationDao.updateStationBatteryInfo(reqMap);
+    }
+
+    public void updateStationFromBatterySync(Map<String, String> reqMap) {
+        stationDao.updateStationFromBatterySync(reqMap);
+    }
+
+    public void updateStationFromRentconfirm(Map<String, String> reqMap) {
+        stationDao.updateStationBatteryInfo(reqMap);
+    }
+
+    public void updateNetStatusById(String stationid) {
+        stationDao.updateNetStatusById(stationid);
     }
 }

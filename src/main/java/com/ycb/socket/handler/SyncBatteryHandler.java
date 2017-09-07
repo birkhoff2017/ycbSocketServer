@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -23,13 +24,23 @@ public class SyncBatteryHandler implements SocketHandler {
     public void execute(MessageReq messageReq, MessageRes messageRes) throws ParseException {
         try {
             StationService stationService = NettyServerStart.factory.getBean(StationService.class);
-            Map<String, String> reqMap = StringUtils.str2Map(messageReq.getContent());
-            stationService.updateSyncSetting(reqMap);
             BatteryService batteryService = NettyServerStart.factory.getBean(BatteryService.class);
-            messageRes.setMsg("TIME:" + System.currentTimeMillis() + ";DOMAIN:pzzhuhui.top;IP:45.62.251.191;PORT:54589;CHECKUPDATEDELAY:xxxx;SOFT_VER:10;FILE_NAME:xxxx;HEATBEAT:120");
+            Map<String, String> reqMap = StringUtils.str2Map(messageReq.getContent());
+            stationService.updateStationFromBatterySync(reqMap);
+            // 获取槽位有电池的电池信息
+            Map<String, Object> batMap = StringUtils.converBatMap(reqMap);
+            Iterator<Map.Entry<String, Object>> entries = batMap.entrySet().iterator();
+            while (entries.hasNext()) {
+                Map.Entry<String, Object> entry = entries.next();
+                batteryService.syncBatteryInfo(entry.getKey(), (Map<String, String>) entry.getValue());
+            }
+            messageRes.setMsg("ERRCODE:0;ERRMSG:none;ACK:" + messageReq.getActValue());
         } catch (Exception e) {
             logger.error(e.getMessage());
             messageRes.setMsg("ERRCODE:0;ERRMSG:" + e.getMessage() + ";ACK:" + messageReq.getActValue());
+        } finally {
+            logger.info(messageReq.getContent());
+            logger.info(messageRes.getMsg());
         }
     }
 }

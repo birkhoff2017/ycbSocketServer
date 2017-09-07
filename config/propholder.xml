@@ -35,7 +35,11 @@
     <bean id="gameHandlerMap" class="java.util.HashMap">
         <constructor-arg>
             <map>
-                <!--借出电池-->
+                <!--客户借出电池-->
+                <entry key="borrow_battery">
+                    <bean class="com.ycb.socket.handler.BatteryBorrowEvent"/>
+                </entry>
+                <!--借出电池客户端反馈-->
                 <entry key="rent_confirm">
                     <bean class="com.ycb.socket.handler.RentConfirmHandler"/>
                 </entry>
@@ -52,6 +56,10 @@
                     <bean class="com.ycb.socket.handler.BatteryStopHandler"/>
                 </entry>
                 <!--查询消息-->
+                <entry key="query">
+                    <bean class="com.ycb.socket.handler.QueryEvent"/>
+                </entry>
+                <!--查询消息反馈-->
                 <entry key="query_confirm">
                     <bean class="com.ycb.socket.handler.QueryConfirmHandler"/>
                 </entry>
@@ -71,13 +79,29 @@
                 <entry key="sync_battery">
                     <bean class="com.ycb.socket.handler.SyncBatteryHandler"/>
                 </entry>
+                <!--主动同步配置-->
+                <entry key="sync_setting_cmd">
+                    <bean class="com.ycb.socket.handler.SyncSettingEvent"/>
+                </entry>
+                <!--主动同步电池-->
+                <entry key="sync_battery_cmd">
+                    <bean class="com.ycb.socket.handler.SyncBatteryEvent"/>
+                </entry>
                 <!--槽位lock-->
                 <entry key="slot_lock">
                     <bean class="com.ycb.socket.handler.SlotLockHandler"/>
                 </entry>
+                <!--解锁槽位指令-->
+                <entry key="slot_unlock_cmd">
+                    <bean class="com.ycb.socket.handler.SlotUnlockCmdEvent"/>
+                </entry>
                 <!--解锁槽位-->
                 <entry key="slot_unlock">
                     <bean class="com.ycb.socket.handler.SlotUnlockHandler"/>
+                </entry>
+                <!--人工借出-->
+                <entry key="popup">
+                    <bean class="com.ycb.socket.handler.PopupEvent"/>
                 </entry>
                 <!--人工借出反馈-->
                 <entry key="popup_confirm">

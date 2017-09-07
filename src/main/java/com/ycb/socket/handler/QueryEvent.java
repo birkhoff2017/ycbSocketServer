@@ -2,24 +2,30 @@ package com.ycb.socket.handler;
 
 import com.ycb.socket.message.MessageReq;
 import com.ycb.socket.message.MessageRes;
+import com.ycb.socket.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
+import java.util.Map;
 
 /**
- * Created by zhuhui on 17-8-2.
+ * Created by zhuhui on 17-8-15.
  */
-public class DebugHandler implements SocketHandler {
+public class QueryEvent implements SocketHandler {
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public void execute(MessageReq messageReq, MessageRes messageRes) throws ParseException {
         try {
-            messageRes.setMsg("ERRCODE:0;ERRMSG:none" + ";ACK:" + messageReq.getActValue());
+            Map<String, String> reqMap = StringUtils.str2Map(messageReq.getContent());
+            messageRes.setMsg("EVENT_CODE:" + reqMap.get("EVENT_CODE") + ";SLOT:" + reqMap.get("SLOT") + ";MSG_ID:" + System.currentTimeMillis() / 1000);
         } catch (Exception e) {
             logger.error(e.getMessage());
             messageRes.setMsg("ERRCODE:0;ERRMSG:" + e.getMessage() + ";ACK:" + messageReq.getActValue());
+        } finally {
+            logger.info(messageReq.getContent());
+            logger.info(messageRes.getMsg());
         }
     }
 }

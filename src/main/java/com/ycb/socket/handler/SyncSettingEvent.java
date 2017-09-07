@@ -1,9 +1,7 @@
 package com.ycb.socket.handler;
 
-import com.ycb.socket.NettyServerStart;
 import com.ycb.socket.message.MessageReq;
 import com.ycb.socket.message.MessageRes;
-import com.ycb.socket.service.StationService;
 import com.ycb.socket.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,18 +10,15 @@ import java.text.ParseException;
 import java.util.Map;
 
 /**
- * 同步配置
- * Created by zhuhui on 17-8-2.
+ * Created by zhuhui on 17-8-15.
  */
-public class SyncSettingHandler implements SocketHandler {
+public class SyncSettingEvent implements SocketHandler {
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public void execute(MessageReq messageReq, MessageRes messageRes) throws ParseException {
         try {
-            StationService stationService = NettyServerStart.factory.getBean(StationService.class);
             Map<String, String> reqMap = StringUtils.str2Map(messageReq.getContent());
-            stationService.updateSyncSetting(reqMap);
             messageRes.setMsg("TIME:" +
                     System.currentTimeMillis() / 1000
                     + ";DOMAIN:pzzhuhui.top;IP:39.108.14.135;PORT:54589;" +
