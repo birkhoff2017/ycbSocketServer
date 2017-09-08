@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
-<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"
-                     debug="false">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
     <appender name="CONSOLE.ERR" class="org.apache.log4j.ConsoleAppender">
         <param name="target" value="System.err"/>
         <layout class="org.apache.log4j.PatternLayout">
@@ -25,7 +24,7 @@
         </filter>
     </appender>
     <appender name="FILE" class="org.apache.log4j.RollingFileAppender">
-        <param name="File" value="/data/logs/dataServer/log.log"/>
+        <param name="File" value="/data/logs/ycbSocketServer/log.log"/>
         <param name="Threshold" value="INFO"/>
         <param name="ImmediateFlush" value="true"></param>
         <param name="MaxFileSize" value="100MB"/>
@@ -35,7 +34,7 @@
         </layout>
     </appender>
     <appender name="error.file" class="org.apache.log4j.RollingFileAppender">
-        <param name="File" value="/data/logs/dataServer/error.log"/>
+        <param name="File" value="/data/logs/ycbSocketServer/error.log"/>
         <param name="Threshold" value="WARN"/>
         <param name="ImmediateFlush" value="true"></param>
         <param name="MaxFileSize" value="100MB"/>

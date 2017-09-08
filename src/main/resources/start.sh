@@ -1,1 +1,1 @@
-nohup java -Xms2g -Xmx4g -Xmn1024m -Xss256k -DZK_HOSTS=10.0.150.42:2181 -Djava.ext.dirs=lib -jar dataServer.jar 8000 >/dev/null &
+nohup java -Xms1g -Xmx4g -Xmn1024m -Xss256k -DZK_HOSTS=127.0.0.1:2181 -Djava.ext.dirs=lib -jar ycbSocketServer.jar 54589 >/dev/null &
