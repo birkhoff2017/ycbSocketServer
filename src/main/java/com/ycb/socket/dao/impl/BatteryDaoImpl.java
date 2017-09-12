@@ -43,7 +43,7 @@ public class BatteryDaoImpl implements BatteryDao {
                 .append("WHERE rfid = ? ");
         dao.update(new OpUpdate(sql, bizName).addParams(
                 reqMap.get("BATT_TYPE"),
-                reqMap.get("KEY"),
+                Boolean.parseBoolean(reqMap.get("KEY")),
                 new Timestamp(Long.valueOf(reqMap.get("TIME")) * 1000),// 归还时间
                 reqMap.get("STATIONID"),
                 reqMap.get("SLOT"),
@@ -60,7 +60,7 @@ public class BatteryDaoImpl implements BatteryDao {
         dao.insert(new OpInsert<>(sql, bizName, Long.class)
                 .addParams(
                         reqMap.get("ID"),
-                        reqMap.get("KEY"),
+                        Boolean.parseBoolean(reqMap.get("KEY")),
                         new Timestamp(Long.valueOf(reqMap.get("TIME")) * 1000),
                         reqMap.get("STATIONID"),
                         reqMap.get("SLOT"),
@@ -95,7 +95,7 @@ public class BatteryDaoImpl implements BatteryDao {
                 .append("WHERE rfid = ? ");
         dao.update(new OpUpdate(sql, bizName).addParams(
                 reqMap.get("BATT_TYPE"),
-                reqMap.get("KEY"),
+                Boolean.parseBoolean(reqMap.get("KEY")),
                 //new Timestamp(Long.valueOf(reqMap.get("TIME")) * 1000),// 归还时间
                 reqMap.get("STATIONID"),
                 slot,
@@ -105,8 +105,8 @@ public class BatteryDaoImpl implements BatteryDao {
                 reqMap.get("CURRENTVAL"),
                 Boolean.parseBoolean(reqMap.get("ADAPTER")),
                 reqMap.get("TEMPERATURE"),
-                reqMap.get("BROKE"),
-                reqMap.get("CHARGESTA"),
+                Boolean.parseBoolean(reqMap.get("BROKE")),
+                Boolean.parseBoolean(reqMap.get("CHARGESTA")),
                 reqMap.get("COLORID"),
                 Integer.valueOf(reqMap.get("CABLE")),
                 reqMap.get("ID")

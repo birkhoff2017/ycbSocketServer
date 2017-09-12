@@ -22,18 +22,18 @@ public class StationDaoImpl implements StationDao {
     @Override
     public Long getStationIdByMac(String mac) {
         StringBuffer sql = new StringBuffer();
-        sql.append("SELECT id FROM ycb_mcs_station ")
+        sql.append("SELECT sid FROM ycb_mcs_station ")
                 .append("WHERE ")
                 .append("mac = ? ");
-        return dao.queryUniq(new DefaultOpUniq<Long>(sql, bizName).setMapper((resultSet, i) -> resultSet.getLong("id")).addParams(mac));
+        return dao.queryUniq(new DefaultOpUniq<Long>(sql, bizName).setMapper((resultSet, i) -> resultSet.getLong("sid")).addParams(mac));
     }
 
     @Override
     public Long insertNewStation(Map<String, String> reqMap) {
         String usableBattery = getUsableBattery(reqMap);
         StringBuffer sql = new StringBuffer();
-        sql.append("INSERT INTO ycb_mcs_station(createdBy,createdDate,optlock,mac,ccid,power_on_time,usable,empty,usable_battery,total,route,heart_cycle,last_power_off_time,net_status) ")
-                .append("VALUES('SYS:station', NOW(), 0, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?, 1)");
+        sql.append("INSERT INTO ycb_mcs_station(createdBy,createdDate,optlock,sid,mac,ccid,power_on_time,usable,empty,usable_battery,total,route,heart_cycle,last_power_off_time,net_status) ")
+                .append("VALUES('SYS:station', NOW(), 0,(SELECT MAX(sid) +1 FROM ycb_mcs_station cust), ?, ?, 0, ?, ?, ?, ?, ?, ?, ?, 1)");
         return dao.insert(new OpInsert<>(sql, bizName, Long.class)
                 .addParams(
                         reqMap.get("MAC"),
@@ -86,7 +86,7 @@ public class StationDaoImpl implements StationDao {
                 .append("lastModifiedDate = NOW(), ")
                 .append("device_ver = ?, ")
                 .append("sync_time = ? ")
-                .append("WHERE id = ? ");
+                .append("WHERE sid = ? ");
         dao.update(new OpUpdate(sql, bizName).addParams(
                 reqMap.get("DEVICE_VER"),
                 new Timestamp(Long.valueOf(reqMap.get("TIMESTAMP")) * 1000),
@@ -106,7 +106,7 @@ public class StationDaoImpl implements StationDao {
                 .append("empty = ?, ")
                 .append("total = ?, ")
                 .append("usable_battery = ? ")
-                .append("WHERE id = ? ");
+                .append("WHERE sid = ? ");
         dao.update(new OpUpdate(sql, bizName).addParams(
                 reqMap.get("USABLE_BATTERY"),
                 reqMap.get("EMPTY_SLOT_COUNT"),
@@ -129,7 +129,7 @@ public class StationDaoImpl implements StationDao {
                 .append("empty = ?, ")
                 .append("total = ?, ")
                 .append("usable_battery = ? ")
-                .append("WHERE id = ? ");
+                .append("WHERE sid = ? ");
         dao.update(new OpUpdate(sql, bizName).addParams(
                 reqMap.get("SLOTSTATUS"),
                 reqMap.get("USABLE_BATTERY"),
@@ -148,7 +148,7 @@ public class StationDaoImpl implements StationDao {
                 .append("lastModifiedBy = 'SYS:station', ")
                 .append("lastModifiedDate = NOW(), ")
                 .append("net_status = 0 ")
-                .append("WHERE id = ? ");
+                .append("WHERE sid = ? ");
         dao.update(new OpUpdate(sql, bizName).addParams(
                 stationid
         ));
@@ -162,6 +162,9 @@ public class StationDaoImpl implements StationDao {
             usableBattery = "{\"" + usableBattery + "\"}";
         } else {
             usableBattery = this.getUsableByStationid(reqMap.get("STATIONID"));
+            if (StringUtils.isEmpty(usableBattery)) {
+                usableBattery = "{\"1\":\"0\",\"2\":\"0\",\"3\":\"0\"}";
+            }
         }
         return usableBattery;
     }
@@ -170,7 +173,7 @@ public class StationDaoImpl implements StationDao {
         StringBuffer sql = new StringBuffer();
         sql.append("SELECT usable_battery FROM ycb_mcs_station ")
                 .append("WHERE ")
-                .append("id = ? ");
+                .append("sid = ? ");
         return dao.queryUniq(new DefaultOpUniq<String>(sql, bizName).setMapper((resultSet, i) -> resultSet.getString("usable_battery")).addParams(stationid));
     }
 

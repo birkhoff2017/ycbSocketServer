@@ -39,7 +39,7 @@ public class MessageService {
                 String accessToken = (String) tokenInfoMap.get("access_token");
                 Integer expiresIn = (Integer) tokenInfoMap.get("expires_in");
                 // 将accessToken存入Redis,存放时间为7200秒
-                redisService.getRedis().set("ACCESS_TOKEN", expiresIn, accessToken);
+                redisService.getRedis().set("ACCESS_TOKEN", expiresIn, accessToken, 300);
                 return accessToken;
             } catch (Exception e) {
                 logger.error(e.getMessage());

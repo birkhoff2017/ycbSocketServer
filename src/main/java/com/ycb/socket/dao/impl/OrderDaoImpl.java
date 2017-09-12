@@ -125,9 +125,9 @@ public class OrderDaoImpl implements OrderDao {
                 .append("shop.name AS shopName ")//归还商铺名称
                 .append("FROM ycb_mcs_shop shop, ycb_mcs_shop_station ss, ycb_mcs_station s ")
                 .append("WHERE ss.shopid = shop.id ")
-                .append("AND ss.station_id = s.id ")
+                .append("AND ss.station_id = s.sid ")
                 .append("AND ss.status = 1 ") // 商铺和设备绑定
-                .append("AND s.id = ? ");
+                .append("AND s.sid = ? ");
         return dao.queryResult(OpResult.create(selectSql, bizName, rs -> {
             Map<String, Object> ret = new HashedMap();
             while (rs.next()) {
