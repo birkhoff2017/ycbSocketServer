@@ -1,5 +1,8 @@
 package com.ycb.socket.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,6 +16,8 @@ import java.util.Map;
  * Created by zhuhui on 17-6-19.
  */
 public class HttpRequest {
+    public static final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
+
     /**
      * 向指定URL发送GET方法的请求
      *
@@ -31,15 +36,14 @@ public class HttpRequest {
             // 设置通用的请求属性
             connection.setRequestProperty("accept", "*/*");
             connection.setRequestProperty("connection", "Keep-Alive");
-            connection.setRequestProperty("user-agent",
-                    "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+            connection.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
             // 建立实际的连接
             connection.connect();
             // 获取所有响应头字段
             Map<String, List<String>> map = connection.getHeaderFields();
             // 遍历所有的响应头字段
             for (String key : map.keySet()) {
-                System.out.println(key + "--->" + map.get(key));
+                logger.info(key + "--->" + map.get(key));
             }
             // 定义 BufferedReader输入流来读取URL的响应
             in = new BufferedReader(new InputStreamReader(
@@ -49,7 +53,7 @@ public class HttpRequest {
                 result += line;
             }
         } catch (Exception e) {
-            System.out.println("发送GET请求出现异常！" + e);
+            logger.error("发送GET请求出现异常！" + e);
             e.printStackTrace();
         }
         // 使用finally块来关闭输入流
@@ -104,7 +108,7 @@ public class HttpRequest {
                 result += line;
             }
         } catch (Exception e) {
-            System.out.println("发送 POST 请求出现异常！" + e);
+            logger.error("发送 POST 请求出现异常！" + e);
             e.printStackTrace();
         }
         //使用finally块来关闭输出流、输入流

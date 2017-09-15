@@ -93,46 +93,11 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.5</version>
                 <configuration>
                     <skip>true</skip>
                 </configuration>
-            </plugin>
-            <!-- 项目依赖插件  -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <configuration>
-                    <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                    <excludeTransitive>false</excludeTransitive> <!-- 表示是否不包含间接依赖的包 -->
-                    <stripVersion>false</stripVersion> <!-- 去除版本信息 -->
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <!-- 拷贝项目依赖包到lib/目录下 -->
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                            <excludeTransitive>false</excludeTransitive>
-                            <stripVersion>false</stripVersion>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
             <!-- 项目资源插件 -->
             <plugin>
@@ -162,28 +127,29 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.6</version>
-                <configuration>
-                    <archive>
-                        <!-- 生成MANIFEST.MF的设置 -->
-                        <manifest>
-                            <!-- 为依赖包添加路径, 这些路径会写在MANIFEST文件的Class-Path下 -->
-                            <!--<addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>-->
-                            <!-- jar启动入口类-->
-                            <mainClass>com.ycb.socket.NettyServerStart</mainClass>
-                        </manifest>
-                        <manifestEntries>
-                            <!-- 在Class-Path下添加配置文件的路径 -->
-                            <Class-Path>conf/</Class-Path>
-                        </manifestEntries>
-                    </archive>
-                    <includes>
-                        <!-- 打jar包时，只打包class文件 -->
-                        <include>**/*.class</include>
-                    </includes>
-                </configuration>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.ycb.socket.NettyServerStart</mainClass>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/spring.handlers</resource>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/spring.schemas</resource>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
