@@ -108,7 +108,7 @@ public class BatteryDaoImpl implements BatteryDao {
                 Boolean.parseBoolean(reqMap.get("BROKE")),
                 Boolean.parseBoolean(reqMap.get("CHARGESTA")),
                 reqMap.get("COLORID"),
-                Integer.valueOf(reqMap.get("CABLE")),
+                reqMap.get("CABLE"),
                 reqMap.get("ID")
         ));
     }

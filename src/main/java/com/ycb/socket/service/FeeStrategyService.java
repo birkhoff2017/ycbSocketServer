@@ -33,7 +33,7 @@ public class FeeStrategyService {
         Long fixedTime = feeStrategy.getFixedTime();
         Long fixedUnit = feeStrategy.getFixedUnit();
         BigDecimal fixed = feeStrategy.getFixed();
-        String fixedStr = StringUtils.isEmpty(fixed) ? "" : "每" + fixedTime + TimeUtil.getUnitString(fixedUnit) + "收费" + fixed + "元。";
+        String fixedStr = StringUtils.isEmpty(fixed) ? "" : fixedTime + TimeUtil.getUnitString(fixedUnit) + "收费" + fixed + "元。";
 
         //超出后每小时收费1元。
         BigDecimal fee = feeStrategy.getFee();
