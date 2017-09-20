@@ -18,7 +18,7 @@ public class NettyServerTest {
     private static Executor messageExecutor;
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        new ChatClient().run();
+        new NettyServerTest().run();
 //        messageExecutor = new FiexThreadPoolExecutor(32, 64, 300);
 //        while (true) {
 //            try {
@@ -45,7 +45,7 @@ public class NettyServerTest {
             Bootstrap bootstrap = new Bootstrap()
                     .group(group)
                     .channel(NioSocketChannel.class)
-                    .handler(new ChatChannelInitializer());
+                    .handler(new ClientInitializer());
             messageExecutor = new FiexThreadPoolExecutor(32, 64, 300);
             while (true) {
                 try {
