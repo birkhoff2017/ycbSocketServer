@@ -47,21 +47,14 @@ public class NettyServerTest {
                     .channel(NioSocketChannel.class)
                     .handler(new ClientInitializer());
             messageExecutor = new FiexThreadPoolExecutor(32, 64, 300);
-            while (true) {
+            for (int i = 0; i < 8000; i++) {
                 try {
                     SendWorker sendWorker = new SendWorker(bootstrap);
                     messageExecutor.execute(sendWorker);
                 } catch (Exception e) {
                     System.out.println("Error");
                 }
-                try {
-                    Thread.sleep(1);
-                } catch (InterruptedException e) {
-                    System.out.println("Error");
-                }
             }
-
-
 //            MessageReq req = new MessageReq();
 //            req.setContent("ACT:login;MAC:12321123");
 //            String mac = UUID.randomUUID().toString();
