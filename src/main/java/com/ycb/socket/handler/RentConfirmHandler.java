@@ -4,9 +4,7 @@ import com.ycb.socket.NettyServerStart;
 import com.ycb.socket.message.MessageReq;
 import com.ycb.socket.message.MessageRes;
 import com.ycb.socket.model.Order;
-import com.ycb.socket.service.BatteryService;
-import com.ycb.socket.service.OrderService;
-import com.ycb.socket.service.StationService;
+import com.ycb.socket.service.*;
 import com.ycb.socket.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +22,8 @@ public class RentConfirmHandler implements SocketHandler {
     public void execute(MessageReq messageReq, MessageRes messageRes) throws ParseException {
         try {
             OrderService orderService = NettyServerStart.factory.getBean(OrderService.class);
+            AlipayMessageService alipayMessageService = NettyServerStart.factory.getBean(AlipayMessageService.class);
+            AlipayOrderService alipayOrderService = NettyServerStart.factory.getBean(AlipayOrderService.class);
             StationService stationService = NettyServerStart.factory.getBean(StationService.class);
             BatteryService batteryService = NettyServerStart.factory.getBean(BatteryService.class);
             Map<String, String> reqMap = StringUtils.str2Map(messageReq.getContent());
@@ -68,14 +68,30 @@ public class RentConfirmHandler implements SocketHandler {
                 // 小程序消息推送
                 if ("1".equals(reqMap.get("STATUS"))) {
                     if (null != order) {
-                        // 推送租借成功消息
-                        orderService.sendRentSuccessMessage(reqMap, order);
+                        //判断是微信小程序的订单还是支付宝信用借还的订单，2为支付宝的订单，3为小程序的订单
+                        if (3 == order.getPlatform()){
+                            // 推送租借成功消息
+                            orderService.sendRentSuccessMessage(reqMap, order);
+                        }else if (2 == order.getPlatform()){
+                            //推送租借成功信息
+                            alipayMessageService.sendBorrowMessage(order);
+                        }
                     }
                 } else {
-                    // 电池弹出失败自动退款至用户余额
-                    orderService.refund(order.getCustomerid(), order.getUsefee(), order.getUsefee());
-                    // 推送租借失败消息
-                    orderService.sendRentFailMessage(reqMap);
+                    //判断是微信小程序的订单还是支付宝信用借还的订单，2为支付宝的订单，3为小程序的订单
+                    if (3 == order.getPlatform()){
+                        // 电池弹出失败自动退款至用户余额
+                        orderService.refund(order.getCustomerid(), order.getUsefee(), order.getUsefee());
+                        // 推送租借失败消息
+                        orderService.sendRentFailMessage(reqMap);
+                    }else if (2 == order.getPlatform()){
+                        //取消掉支付宝已经生成的信用借还订单
+                        //orderno是生成信用借还订单的时候支付宝返回的订单编号
+                        alipayOrderService.cancelOrder(order.getOrderNo());
+                        //推送租借失败的消息
+                        alipayMessageService.sendErrorMessage(order);
+                    }
+
                 }
             }
             messageRes.setMsg("ERRCODE:0;ERRMSG:none;ORDERID:" + reqMap.get("ORDERID") + ";ACK:" + messageReq.getActValue());

@@ -5,10 +5,7 @@ import com.ycb.socket.message.MessageReq;
 import com.ycb.socket.message.MessageRes;
 import com.ycb.socket.model.FeeStrategy;
 import com.ycb.socket.model.Order;
-import com.ycb.socket.service.BatteryService;
-import com.ycb.socket.service.FeeStrategyService;
-import com.ycb.socket.service.OrderService;
-import com.ycb.socket.service.UserService;
+import com.ycb.socket.service.*;
 import com.ycb.socket.utils.StringUtils;
 import com.ycb.socket.utils.TimeUtil;
 import org.slf4j.Logger;
@@ -32,6 +29,7 @@ public class ReturnBackHandler implements SocketHandler {
             OrderService orderService = NettyServerStart.factory.getBean(OrderService.class);
             UserService userService = NettyServerStart.factory.getBean(UserService.class);
             FeeStrategyService feeStrategyService = NettyServerStart.factory.getBean(FeeStrategyService.class);
+            AlipayMessageService alipayMessageService = NettyServerStart.factory.getBean(AlipayMessageService.class);
             Map<String, String> reqMap = StringUtils.str2Map(messageReq.getContent());
             // 根据电池ID检索电池表，新建数据
             Boolean exist = batteryService.findByBatteryId(reqMap.get("ID"));
@@ -61,10 +59,20 @@ public class ReturnBackHandler implements SocketHandler {
                     userService.updateUserFee(borrowOrder.getCustomerid(), borrowOrder.getPaid(), refund);
                     lastTime = TimeUtil.timeToString(duration);
                     useFeeStr = usefee + "元";
-                    // 推送归还成功消息
-                    orderService.sendReturnSuccessMessage(lastTime, useFeeStr, borrowOrder);
+
                     // 更新订单信息 订单状态由借出->归还
                     orderService.updateOrderFromRetrunback(reqMap, usefee);
+                    //查询更新后的订单表
+                    Order backBatteryOrder = orderService.getBackBatteryOrder(reqMap.get("ID"));
+                    //判断是哪个平台的订单就调用哪个平台的消息推送service，2为支付宝的订单，3为小程序的订单
+                    if (3 == backBatteryOrder.getPlatform()){
+                        // 推送归还成功消息
+                        orderService.sendReturnSuccessMessage(lastTime, useFeeStr, borrowOrder);
+                    }else if (2 == backBatteryOrder.getPlatform()){
+
+                        // 推送归还成功消息
+                        alipayMessageService.sendReturnMessage(backBatteryOrder);
+                    }
                 }
                 // 更新电池表信息
                 batteryService.updateBatteryInfo(reqMap);
