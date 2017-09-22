@@ -71,6 +71,14 @@ public class Order implements Serializable {
 
     private String address;
 
+    //@MetaData("信用借还的订单号")
+    //@Column(name = "order_no")
+    private String orderNo;
+
+    //@MetaData("支付宝的资金流水号")
+    //@Column(name = "alipay_fund_order_no")
+    private String alipayFundOrderNo;
+
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }
@@ -241,5 +249,21 @@ public class Order implements Serializable {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
+
+    public String getAlipayFundOrderNo() {
+        return alipayFundOrderNo;
+    }
+
+    public void setAlipayFundOrderNo(String alipayFundOrderNo) {
+        this.alipayFundOrderNo = alipayFundOrderNo;
     }
 }

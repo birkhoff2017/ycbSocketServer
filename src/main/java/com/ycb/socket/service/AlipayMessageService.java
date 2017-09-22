@@ -9,6 +9,7 @@ import com.ycb.socket.constant.GlobalConfig;
 import com.ycb.socket.dao.OrderDao;
 import com.ycb.socket.dao.UserDao;
 import com.ycb.socket.model.Order;
+import com.ycb.socket.utils.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,37 +86,37 @@ public class AlipayMessageService {
         String remarkColor = "#32cd32";
         String remarkValue = "充电宝自带一根多功能充电线，插头的AB面分别支持苹果/安卓，如插入后没响应，更换另一面即可。";
 
-        request.setBizContent("{" +
-                "\"to_user_id\":\"" + openid + "\"," +
-                "\"template\":{" +
-                "\"template_id\":\"" + GlobalConfig.ALIPAY_SEND_BORROW_MESSAGE + "\"," +
-                "\"context\":{" +
-                "\"head_color\":\"" + headColor + "\"," +
-                "\"url\":\"" + url + "\"," +
-                "\"action_name\":\"" + actionName + "\"," +
-                "\"keyword1\":{" +
-                "\"color\":\"" + keyword1Color + "\"," +
-                "\"value\":\"" + keyword1Value + "\"" +
-                "        }," +
-                "\"keyword2\":{" +
-                "\"color\":\"" + keyword2Color + "\"," +
-                "\"value\":\"" + keyword2Value + "\"" +
-                "        }," +
-                "\"keyword3\":{" +
-                "\"color\":\"" + keyword3Color + "\"," +
-                "\"value\":\"" + keyword3Value + "\"" +
-                "        }," +
-                "\"first\":{" +
-                "\"color\":\"" + firstColor + "\"," +
-                "\"value\":\"" + firstValue + "\"" +
-                "        }," +
-                "\"remark\":{" +
-                "\"color\":\"" + remarkColor + "\"," +
-                "\"value\":\"" + remarkValue + "\"" +
-                "        }" +
-                "      }" +
-                "    }" +
-                "  }");
+        Map<String,Object> keyword1 = new LinkedHashMap<>();
+        keyword1.put("color",keyword1Color);
+        keyword1.put("value",keyword1Value);
+        Map<String,Object> keyword2 = new LinkedHashMap<>();
+        keyword2.put("color",keyword2Color);
+        keyword2.put("value",keyword2Value);
+        Map<String,Object> keyword3 = new LinkedHashMap<>();
+        keyword3.put("color",keyword3Color);
+        keyword3.put("value",keyword3Value);
+        Map<String,Object> first = new LinkedHashMap<>();
+        first.put("color",firstColor);
+        first.put("value",firstValue);
+        Map<String,Object> remark = new LinkedHashMap<>();
+        remark.put("color",remarkColor);
+        remark.put("value",remarkValue);
+        Map<String,Object> context = new LinkedHashMap<>();
+        context.put("head_color",headColor);
+        context.put("url",url);
+        context.put("action_name",actionName);
+        context.put("keyword1",keyword1);
+        context.put("keyword2",keyword2);
+        context.put("keyword3",keyword3);
+        context.put("first",first);
+        context.put("remark",remark);
+        Map<String,Object> template = new LinkedHashMap<>();
+        template.put("template_id",GlobalConfig.ALIPAY_SEND_BORROW_MESSAGE);
+        template.put("context",context);
+        Map<String,Object> bizContentMap = new LinkedHashMap<>();
+        bizContentMap.put("to_user_id",openid);
+        bizContentMap.put("template",template);
+        request.setBizContent(JsonUtils.writeValueAsString(bizContentMap));
         AlipayOpenPublicMessageSingleSendResponse response = null;
         try {
             response = alipayClient.execute(request);
@@ -123,15 +124,17 @@ public class AlipayMessageService {
             e.printStackTrace();
         }
         if (response.isSuccess()) {
-            System.out.println("调用成功");
+            //通知成功，不做任何处理
         } else {
-            System.out.println("调用失败");
             logger.error("通知用户借用成功失败，错误代码：" + response.getCode() + "错误信息：" + response.getMsg() +
                     "错误子代码" + response.getSubCode() + "错误子信息：" + response.getSubMsg());
         }
     }
 
-    //租借超时时，发送租借失败的通知给用户
+    /**
+     * 租借超时时，发送租借失败的通知给用户
+     * @param order 订单
+     */
     public void sendErrorMessage(Order order) {
         //获取order订单的商户的编号
         String orderid = order.getOrderid();
@@ -160,29 +163,29 @@ public class AlipayMessageService {
         String remarkColor = "#32cd32";
         String remarkValue = "非常抱歉，您此次租借未成功，您可点击详情重新租借。如有疑问，请致电：4006290808";
 
-        request.setBizContent("{" +
-                "\"to_user_id\":\"" + openid + "\"," +
-                "\"template\":{" +
-                "\"template_id\":\"" + GlobalConfig.ALIPAY_SEND_ERROR_MESSAGE + "\"," +
-                "\"context\":{" +
-                "\"head_color\":\"" + headColor + "\"," +
-                "\"url\":\"" + url + "\"," +
-                "\"action_name\":\"" + actionName + "\"," +
-                "\"keyword1\":{" +
-                "\"color\":\"" + keyword1Color + "\"," +
-                "\"value\":\"" + orderid + "\"" +
-                "        }," +
-                "\"first\":{" +
-                "\"color\":\"" + firstColor + "\"," +
-                "\"value\":\"" + firstValue + "\"" +
-                "        }," +
-                "\"remark\":{" +
-                "\"color\":\"" + remarkColor + "\"," +
-                "\"value\":\"" + remarkValue + "\"" +
-                "        }" +
-                "      }" +
-                "    }" +
-                "  }");
+        Map<String,Object> keyword1 = new LinkedHashMap<>();
+        keyword1.put("color",keyword1Color);
+        keyword1.put("value",orderid);
+        Map<String,Object> first = new LinkedHashMap<>();
+        first.put("color",firstColor);
+        first.put("value",firstValue);
+        Map<String,Object> remark = new LinkedHashMap<>();
+        remark.put("color",remarkColor);
+        remark.put("value",remarkValue);
+        Map<String,Object> context = new LinkedHashMap<>();
+        context.put("head_color",headColor);
+        context.put("url",url);
+        context.put("action_name",actionName);
+        context.put("keyword1",keyword1);
+        context.put("first",first);
+        context.put("remark",remark);
+        Map<String,Object> template = new LinkedHashMap<>();
+        template.put("template_id",GlobalConfig.ALIPAY_SEND_ERROR_MESSAGE);
+        template.put("context",context);
+        Map<String,Object> bizContentMap = new LinkedHashMap<>();
+        bizContentMap.put("to_user_id",openid);
+        bizContentMap.put("template",template);
+        request.setBizContent(JsonUtils.writeValueAsString(bizContentMap));
         AlipayOpenPublicMessageSingleSendResponse response = null;
         try {
             response = alipayClient.execute(request);
@@ -190,16 +193,18 @@ public class AlipayMessageService {
             e.printStackTrace();
         }
         if (response.isSuccess()) {
-            System.out.println("调用成功");
+            //通知成功，不做任何处理
         } else {
-            System.out.println("调用失败");
-            logger.error("通知用户借用成功失败，错误代码：" + response.getCode() + "错误信息：" + response.getMsg() +
+            logger.error("通知用户借用失败出错，错误代码：" + response.getCode() + "错误信息：" + response.getMsg() +
                     "错误子代码" + response.getSubCode() + "错误子信息：" + response.getSubMsg());
         }
     }
 
-    //用户归还成功后，调用发送消息的接口给用户发送归还成功的通知
-    private void sendReturnMessage(Order order) {
+    /**
+     * 用户归还成功后，调用发送消息的接口给用户发送归还成功的通知
+     * @param order 订单
+     */
+    public void sendReturnMessage(Order order) {
         AlipayClient alipayClient = new DefaultAlipayClient(GlobalConfig.ALIPAY_SERVER_URL, GlobalConfig.ALIPAY_APPID, GlobalConfig.ALIPAY_PRIVATEKEY, GlobalConfig.ALIPAY_FORMAT, GlobalConfig.ALIPAY_CHARSET, GlobalConfig.ALIPAY_ALIPAYPUBLICKEY, GlobalConfig.ALIPAY_SIGNTYPE);
         AlipayOpenPublicMessageSingleSendRequest request = new AlipayOpenPublicMessageSingleSendRequest();
 
@@ -263,41 +268,41 @@ public class AlipayMessageService {
         String remarkColor = "#32cd32";
         String remarkValue = "此次租借产生费用" + order.getPrice() + "元。如有疑问，请致电4006290808";
 
-        request.setBizContent("{" +
-                "\"to_user_id\":\"" + openid + "\"," +
-                "\"template\":{" +
-                "\"template_id\":\"" + GlobalConfig.ALIPAY_SEND_RETURN_MESSAGE + "\"," +
-                "\"context\":{" +
-                "\"head_color\":\"" + headColor + "\"," +
-                "\"url\":\"" + url + "\"," +
-                "\"action_name\":\"" + actionName + "\"," +
-                "\"keyword1\":{" +
-                "\"color\":\"" + keyword1Color + "\"," +
-                "\"value\":\"" + keyword1Value + "\"" +
-                "        }," +
-                "\"keyword2\":{" +
-                "\"color\":\"" + keyword2Color + "\"," +
-                "\"value\":\"" + keyword2Value + "\"" +
-                "        }," +
-                "\"keyword3\":{" +
-                "\"color\":\"" + keyword3Color + "\"," +
-                "\"value\":\"" + keyword3Value + "\"" +
-                "        }," +
-                "\"keyword4\":{" +
-                "\"color\":\"" + keyword4Color + "\"," +
-                "\"value\":\"" + keyword4Value + "\"" +
-                "        }," +
-                "\"first\":{" +
-                "\"color\":\"" + firstColor + "\"," +
-                "\"value\":\"" + firstValue + "\"" +
-                "        }," +
-                "\"remark\":{" +
-                "\"color\":\"" + remarkColor + "\"," +
-                "\"value\":\"" + remarkValue + "\"" +
-                "        }" +
-                "      }" +
-                "    }" +
-                "  }");
+        Map<String,Object> keyword1 = new LinkedHashMap<>();
+        keyword1.put("color",keyword1Color);
+        keyword1.put("value",keyword1Value);
+        Map<String,Object> keyword2 = new LinkedHashMap<>();
+        keyword2.put("color",keyword2Color);
+        keyword2.put("value",keyword2Value);
+        Map<String,Object> keyword3 = new LinkedHashMap<>();
+        keyword3.put("color",keyword3Color);
+        keyword3.put("value",keyword3Value);
+        Map<String,Object> keyword4 = new LinkedHashMap<>();
+        keyword4.put("color",keyword4Color);
+        keyword4.put("value",keyword4Value);
+        Map<String,Object> first = new LinkedHashMap<>();
+        first.put("color",firstColor);
+        first.put("value",firstValue);
+        Map<String,Object> remark = new LinkedHashMap<>();
+        remark.put("color",remarkColor);
+        remark.put("value",remarkValue);
+        Map<String,Object> context = new LinkedHashMap<>();
+        context.put("head_color",headColor);
+        context.put("url",url);
+        context.put("action_name",actionName);
+        context.put("keyword1",keyword1);
+        context.put("keyword2",keyword2);
+        context.put("keyword3",keyword3);
+        context.put("keyword4",keyword4);
+        context.put("first",first);
+        context.put("remark",remark);
+        Map<String,Object> template = new LinkedHashMap<>();
+        template.put("template_id",GlobalConfig.ALIPAY_SEND_RETURN_MESSAGE);
+        template.put("context",context);
+        Map<String,Object> bizContentMap = new LinkedHashMap<>();
+        bizContentMap.put("to_user_id",openid);
+        bizContentMap.put("template",template);
+        request.setBizContent(JsonUtils.writeValueAsString(bizContentMap));
         AlipayOpenPublicMessageSingleSendResponse response = null;
         try {
             response = alipayClient.execute(request);
@@ -305,10 +310,9 @@ public class AlipayMessageService {
             e.printStackTrace();
         }
         if (response.isSuccess()) {
-            System.out.println("调用成功");
+            //通知成功，不做任何处理
         } else {
-            System.out.println("调用失败");
-            logger.error("通知用户借用成功失败，错误代码：" + response.getCode() + "错误信息：" + response.getMsg() +
+            logger.error("通知用户归还成功失败，错误代码：" + response.getCode() + "错误信息：" + response.getMsg() +
                     "错误子代码" + response.getSubCode() + "错误子信息：" + response.getSubMsg());
         }
     }

@@ -20,4 +20,5 @@ public class GlobalConfig {
     public static final String ALIPAY_SEND_BORROW_MESSAGE="24b75e2d6fb442798d0d8565f02f9a1b";
     public static final String ALIPAY_SEND_ERROR_MESSAGE="fe6e474648a34949a053cd374cf0cfb5";
     public static final String ALIPAY_SEND_RETURN_MESSAGE="9bc0cc74b6fc4949a7fcd9736f812469";
+    public static final String ALIPAY_PRODUCT_CODE="w1010100000000002858";
 }

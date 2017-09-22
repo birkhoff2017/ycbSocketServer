@@ -63,6 +63,9 @@ public class OrderDaoImpl implements OrderDao {
                 .append("t.return_time, ")
                 .append("t.usefee, ")
                 .append("t.borrow_station_name address, ")
+                .append("t.platform, ")
+                .append("t.order_no, ")
+                .append("t.alipay_fund_order_no, ")
                 .append("ss.fee_settings ")
                 .append("FROM ycb_mcs_tradelog t ")
                 .append("LEFT JOIN ycb_mcs_shop_station ss ")
@@ -81,6 +84,9 @@ public class OrderDaoImpl implements OrderDao {
                 order.setFeeSettings(rs.getLong("fee_settings"));
                 order.setAddress(rs.getString("address"));
                 order.setUsefee(rs.getBigDecimal("usefee"));
+                order.setPlatform(rs.getInt("platform"));
+                order.setOrderNo(rs.getString("order_no"));
+                order.setAlipayFundOrderNo(rs.getString("alipay_fund_order_no"));
             }
             return order;
         }).addParams(id));
