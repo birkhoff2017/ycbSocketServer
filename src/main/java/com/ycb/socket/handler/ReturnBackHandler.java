@@ -30,6 +30,7 @@ public class ReturnBackHandler implements SocketHandler {
             UserService userService = NettyServerStart.factory.getBean(UserService.class);
             FeeStrategyService feeStrategyService = NettyServerStart.factory.getBean(FeeStrategyService.class);
             AlipayMessageService alipayMessageService = NettyServerStart.factory.getBean(AlipayMessageService.class);
+            AlipayOrderService alipayOrderService = NettyServerStart.factory.getBean(AlipayOrderService.class);
             Map<String, String> reqMap = StringUtils.str2Map(messageReq.getContent());
             // 根据电池ID检索电池表，新建数据
             Boolean exist = batteryService.findByBatteryId(reqMap.get("ID"));
@@ -69,7 +70,8 @@ public class ReturnBackHandler implements SocketHandler {
                         // 推送归还成功消息
                         orderService.sendReturnSuccessMessage(lastTime, useFeeStr, borrowOrder);
                     }else if (2 == backBatteryOrder.getPlatform()){
-
+                        //调用支付宝完结订单的接口完结订单
+                        alipayOrderService.completeOrder(borrowOrder);
                         // 推送归还成功消息
                         alipayMessageService.sendReturnMessage(backBatteryOrder);
                     }
