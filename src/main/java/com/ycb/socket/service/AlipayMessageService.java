@@ -10,6 +10,7 @@ import com.ycb.socket.dao.OrderDao;
 import com.ycb.socket.dao.UserDao;
 import com.ycb.socket.model.Order;
 import com.ycb.socket.utils.JsonUtils;
+import com.ycb.socket.utils.MD5;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,8 +57,10 @@ public class AlipayMessageService {
         //顶部色条的色值
         String headColor = "#000000";
 
+        String session = MD5.getMessageDigest(openid.getBytes());
+
         //点击消息后承接页的地址
-        String url = "https://www.baidu.com/";
+        String url = "http://www.duxinyuan.top/order/getOrderList?session=" + session;
         //底部链接描述文字，如“查看详情”
         String actionName = "查看详情";
 
@@ -86,36 +89,36 @@ public class AlipayMessageService {
         String remarkColor = "#32cd32";
         String remarkValue = "充电宝自带一根多功能充电线，插头的AB面分别支持苹果/安卓，如插入后没响应，更换另一面即可。";
 
-        Map<String,Object> keyword1 = new LinkedHashMap<>();
-        keyword1.put("color",keyword1Color);
-        keyword1.put("value",keyword1Value);
-        Map<String,Object> keyword2 = new LinkedHashMap<>();
-        keyword2.put("color",keyword2Color);
-        keyword2.put("value",keyword2Value);
-        Map<String,Object> keyword3 = new LinkedHashMap<>();
-        keyword3.put("color",keyword3Color);
-        keyword3.put("value",keyword3Value);
-        Map<String,Object> first = new LinkedHashMap<>();
-        first.put("color",firstColor);
-        first.put("value",firstValue);
-        Map<String,Object> remark = new LinkedHashMap<>();
-        remark.put("color",remarkColor);
-        remark.put("value",remarkValue);
-        Map<String,Object> context = new LinkedHashMap<>();
-        context.put("head_color",headColor);
-        context.put("url",url);
-        context.put("action_name",actionName);
-        context.put("keyword1",keyword1);
-        context.put("keyword2",keyword2);
-        context.put("keyword3",keyword3);
-        context.put("first",first);
-        context.put("remark",remark);
-        Map<String,Object> template = new LinkedHashMap<>();
-        template.put("template_id",GlobalConfig.ALIPAY_SEND_BORROW_MESSAGE);
-        template.put("context",context);
-        Map<String,Object> bizContentMap = new LinkedHashMap<>();
-        bizContentMap.put("to_user_id",openid);
-        bizContentMap.put("template",template);
+        Map<String, Object> keyword1 = new LinkedHashMap<>();
+        keyword1.put("color", keyword1Color);
+        keyword1.put("value", keyword1Value);
+        Map<String, Object> keyword2 = new LinkedHashMap<>();
+        keyword2.put("color", keyword2Color);
+        keyword2.put("value", keyword2Value);
+        Map<String, Object> keyword3 = new LinkedHashMap<>();
+        keyword3.put("color", keyword3Color);
+        keyword3.put("value", keyword3Value);
+        Map<String, Object> first = new LinkedHashMap<>();
+        first.put("color", firstColor);
+        first.put("value", firstValue);
+        Map<String, Object> remark = new LinkedHashMap<>();
+        remark.put("color", remarkColor);
+        remark.put("value", remarkValue);
+        Map<String, Object> context = new LinkedHashMap<>();
+        context.put("head_color", headColor);
+        context.put("url", url);
+        context.put("action_name", actionName);
+        context.put("keyword1", keyword1);
+        context.put("keyword2", keyword2);
+        context.put("keyword3", keyword3);
+        context.put("first", first);
+        context.put("remark", remark);
+        Map<String, Object> template = new LinkedHashMap<>();
+        template.put("template_id", GlobalConfig.ALIPAY_SEND_BORROW_MESSAGE);
+        template.put("context", context);
+        Map<String, Object> bizContentMap = new LinkedHashMap<>();
+        bizContentMap.put("to_user_id", openid);
+        bizContentMap.put("template", template);
         request.setBizContent(JsonUtils.writeValueAsString(bizContentMap));
         AlipayOpenPublicMessageSingleSendResponse response = null;
         try {
@@ -147,7 +150,7 @@ public class AlipayMessageService {
         String headColor = "#000000";
 
         //点击消息后承接页的地址
-        String url = "https://www.baidu.com/";
+        String url = "http://www.duxinyuan.top/loading.html?return_type=test";
         //底部链接描述文字，如“查看详情”
         String actionName = "查看详情";
 
@@ -163,28 +166,28 @@ public class AlipayMessageService {
         String remarkColor = "#32cd32";
         String remarkValue = "非常抱歉，您此次租借未成功，您可点击详情重新租借。如有疑问，请致电：4006290808";
 
-        Map<String,Object> keyword1 = new LinkedHashMap<>();
-        keyword1.put("color",keyword1Color);
-        keyword1.put("value",orderid);
-        Map<String,Object> first = new LinkedHashMap<>();
-        first.put("color",firstColor);
-        first.put("value",firstValue);
-        Map<String,Object> remark = new LinkedHashMap<>();
-        remark.put("color",remarkColor);
-        remark.put("value",remarkValue);
-        Map<String,Object> context = new LinkedHashMap<>();
-        context.put("head_color",headColor);
-        context.put("url",url);
-        context.put("action_name",actionName);
-        context.put("keyword1",keyword1);
-        context.put("first",first);
-        context.put("remark",remark);
-        Map<String,Object> template = new LinkedHashMap<>();
-        template.put("template_id",GlobalConfig.ALIPAY_SEND_ERROR_MESSAGE);
-        template.put("context",context);
-        Map<String,Object> bizContentMap = new LinkedHashMap<>();
-        bizContentMap.put("to_user_id",openid);
-        bizContentMap.put("template",template);
+        Map<String, Object> keyword1 = new LinkedHashMap<>();
+        keyword1.put("color", keyword1Color);
+        keyword1.put("value", orderid);
+        Map<String, Object> first = new LinkedHashMap<>();
+        first.put("color", firstColor);
+        first.put("value", firstValue);
+        Map<String, Object> remark = new LinkedHashMap<>();
+        remark.put("color", remarkColor);
+        remark.put("value", remarkValue);
+        Map<String, Object> context = new LinkedHashMap<>();
+        context.put("head_color", headColor);
+        context.put("url", url);
+        context.put("action_name", actionName);
+        context.put("keyword1", keyword1);
+        context.put("first", first);
+        context.put("remark", remark);
+        Map<String, Object> template = new LinkedHashMap<>();
+        template.put("template_id", GlobalConfig.ALIPAY_SEND_ERROR_MESSAGE);
+        template.put("context", context);
+        Map<String, Object> bizContentMap = new LinkedHashMap<>();
+        bizContentMap.put("to_user_id", openid);
+        bizContentMap.put("template", template);
         request.setBizContent(JsonUtils.writeValueAsString(bizContentMap));
         AlipayOpenPublicMessageSingleSendResponse response = null;
         try {
@@ -215,7 +218,7 @@ public class AlipayMessageService {
         String headColor = "#000000";
 
         //点击消息后承接页的地址
-        String url = "https://www.baidu.com/";
+        String url = "http://www.duxinyuan.top/user.html";
 
         //底部链接描述文字，如“查看详情”
         String actionName = "查看详情";
@@ -268,40 +271,40 @@ public class AlipayMessageService {
         String remarkColor = "#32cd32";
         String remarkValue = "此次租借产生费用" + order.getPrice() + "元。如有疑问，请致电4006290808";
 
-        Map<String,Object> keyword1 = new LinkedHashMap<>();
-        keyword1.put("color",keyword1Color);
-        keyword1.put("value",keyword1Value);
-        Map<String,Object> keyword2 = new LinkedHashMap<>();
-        keyword2.put("color",keyword2Color);
-        keyword2.put("value",keyword2Value);
-        Map<String,Object> keyword3 = new LinkedHashMap<>();
-        keyword3.put("color",keyword3Color);
-        keyword3.put("value",keyword3Value);
-        Map<String,Object> keyword4 = new LinkedHashMap<>();
-        keyword4.put("color",keyword4Color);
-        keyword4.put("value",keyword4Value);
-        Map<String,Object> first = new LinkedHashMap<>();
-        first.put("color",firstColor);
-        first.put("value",firstValue);
-        Map<String,Object> remark = new LinkedHashMap<>();
-        remark.put("color",remarkColor);
-        remark.put("value",remarkValue);
-        Map<String,Object> context = new LinkedHashMap<>();
-        context.put("head_color",headColor);
-        context.put("url",url);
-        context.put("action_name",actionName);
-        context.put("keyword1",keyword1);
-        context.put("keyword2",keyword2);
-        context.put("keyword3",keyword3);
-        context.put("keyword4",keyword4);
-        context.put("first",first);
-        context.put("remark",remark);
-        Map<String,Object> template = new LinkedHashMap<>();
-        template.put("template_id",GlobalConfig.ALIPAY_SEND_RETURN_MESSAGE);
-        template.put("context",context);
-        Map<String,Object> bizContentMap = new LinkedHashMap<>();
-        bizContentMap.put("to_user_id",openid);
-        bizContentMap.put("template",template);
+        Map<String, Object> keyword1 = new LinkedHashMap<>();
+        keyword1.put("color", keyword1Color);
+        keyword1.put("value", keyword1Value);
+        Map<String, Object> keyword2 = new LinkedHashMap<>();
+        keyword2.put("color", keyword2Color);
+        keyword2.put("value", keyword2Value);
+        Map<String, Object> keyword3 = new LinkedHashMap<>();
+        keyword3.put("color", keyword3Color);
+        keyword3.put("value", keyword3Value);
+        Map<String, Object> keyword4 = new LinkedHashMap<>();
+        keyword4.put("color", keyword4Color);
+        keyword4.put("value", keyword4Value);
+        Map<String, Object> first = new LinkedHashMap<>();
+        first.put("color", firstColor);
+        first.put("value", firstValue);
+        Map<String, Object> remark = new LinkedHashMap<>();
+        remark.put("color", remarkColor);
+        remark.put("value", remarkValue);
+        Map<String, Object> context = new LinkedHashMap<>();
+        context.put("head_color", headColor);
+        context.put("url", url);
+        context.put("action_name", actionName);
+        context.put("keyword1", keyword1);
+        context.put("keyword2", keyword2);
+        context.put("keyword3", keyword3);
+        context.put("keyword4", keyword4);
+        context.put("first", first);
+        context.put("remark", remark);
+        Map<String, Object> template = new LinkedHashMap<>();
+        template.put("template_id", GlobalConfig.ALIPAY_SEND_RETURN_MESSAGE);
+        template.put("context", context);
+        Map<String, Object> bizContentMap = new LinkedHashMap<>();
+        bizContentMap.put("to_user_id", openid);
+        bizContentMap.put("template", template);
         request.setBizContent(JsonUtils.writeValueAsString(bizContentMap));
         AlipayOpenPublicMessageSingleSendResponse response = null;
         try {
