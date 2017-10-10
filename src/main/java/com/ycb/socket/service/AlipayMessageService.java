@@ -22,7 +22,7 @@ import java.util.Map;
 
 /**
  * Created by Huo on 2017/9/21.
- *
+ * <p>
  * 用于在用户借用电池，归还电池，借出失败时向用户发送通知
  */
 @Service
@@ -63,7 +63,7 @@ public class AlipayMessageService {
         String session = MD5.getMessageDigest(openid.getBytes());
 
         //点击消息后承接页的地址为用户的借用历史记录，因此将用户的session带上用于获取到用户的订单记录
-        String url = "http://www.duxinyuan.top/order/getOrderList?session=" + session;
+        String url = GlobalConfig.ALIPAY_NOTIFY_URL + "/order/getOrderList?session=" + session;
         //底部链接描述文字
         String actionName = "查看详情";
 
@@ -156,7 +156,7 @@ public class AlipayMessageService {
 
         //点击消息后承接页的地址为附近充电宝站点列表页，带上return_type的目的是
         //进入附近充电宝站点列表页而不是弹出电池借用成功的弹出框
-        String url = "http://www.duxinyuan.top/loading.html?return_type=test";
+        String url = GlobalConfig.ALIPAY_NOTIFY_URL + "/loading.html?return_type=test";
         //底部链接描述文字，如“查看详情”
         String actionName = "查看详情";
 
@@ -226,7 +226,7 @@ public class AlipayMessageService {
         String headColor = "#000000";
 
         //点击消息后承接页的地址
-        String url = "http://www.duxinyuan.top/user.html";
+        String url = GlobalConfig.ALIPAY_NOTIFY_URL + "/user.html";
 
         //底部链接描述文字，如“查看详情”
         String actionName = "查看详情";
