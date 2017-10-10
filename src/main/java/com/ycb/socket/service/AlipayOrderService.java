@@ -65,7 +65,7 @@ public class AlipayOrderService {
         //获得信用借还订单支付宝的订单编号
         String orderNo = order.getOrderNo();
         //物品归还时间
-        String restoreTime = new SimpleDateFormat("YYYY-MM-dd HH:MM:ss").format(order.getReturnTime());
+        String restoreTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(order.getReturnTime());
         /*
         金额类型：
         RENT:租金
