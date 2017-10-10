@@ -22,6 +22,8 @@ import java.util.Map;
 
 /**
  * Created by Huo on 2017/9/21.
+ *
+ * 用于在用户借用电池，归还电池，借出失败时向用户发送通知
  */
 @Service
 public class AlipayMessageService {
@@ -44,6 +46,7 @@ public class AlipayMessageService {
 
     /**
      * 用户借用成功后，调用发送消息的接口给用户发送借用成功的通知
+     *
      * @param order 订单
      */
     public void sendBorrowMessage(Order order) {
@@ -59,9 +62,9 @@ public class AlipayMessageService {
 
         String session = MD5.getMessageDigest(openid.getBytes());
 
-        //点击消息后承接页的地址
+        //点击消息后承接页的地址为用户的借用历史记录，因此将用户的session带上用于获取到用户的订单记录
         String url = "http://www.duxinyuan.top/order/getOrderList?session=" + session;
-        //底部链接描述文字，如“查看详情”
+        //底部链接描述文字
         String actionName = "查看详情";
 
         //当前文字颜色
@@ -124,18 +127,20 @@ public class AlipayMessageService {
         try {
             response = alipayClient.execute(request);
         } catch (AlipayApiException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
-        if (response.isSuccess()) {
-            //通知成功，不做任何处理
-        } else {
-            logger.error("通知用户借用成功失败，错误代码：" + response.getCode() + "错误信息：" + response.getMsg() +
-                    "错误子代码" + response.getSubCode() + "错误子信息：" + response.getSubMsg());
+        if (response == null || !response.isSuccess()) {
+            logger.error("向用户发送借用成功的消息失败");
+            if (response != null) {
+                logger.error("错误代码：" + response.getCode() + "错误信息：" + response.getMsg() +
+                        "错误子代码" + response.getSubCode() + "错误子信息：" + response.getSubMsg());
+            }
         }
     }
 
     /**
      * 租借超时时，发送租借失败的通知给用户
+     *
      * @param order 订单
      */
     public void sendErrorMessage(Order order) {
@@ -149,7 +154,8 @@ public class AlipayMessageService {
         //顶部色条的色值
         String headColor = "#000000";
 
-        //点击消息后承接页的地址
+        //点击消息后承接页的地址为附近充电宝站点列表页，带上return_type的目的是
+        //进入附近充电宝站点列表页而不是弹出电池借用成功的弹出框
         String url = "http://www.duxinyuan.top/loading.html?return_type=test";
         //底部链接描述文字，如“查看详情”
         String actionName = "查看详情";
@@ -193,18 +199,20 @@ public class AlipayMessageService {
         try {
             response = alipayClient.execute(request);
         } catch (AlipayApiException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
-        if (response.isSuccess()) {
-            //通知成功，不做任何处理
-        } else {
-            logger.error("通知用户借用失败出错，错误代码：" + response.getCode() + "错误信息：" + response.getMsg() +
-                    "错误子代码" + response.getSubCode() + "错误子信息：" + response.getSubMsg());
+        if (response == null || !response.isSuccess()) {
+            logger.error("向用户发送借用失败的消息出错");
+            if (response != null) {
+                logger.error("错误代码：" + response.getCode() + "错误信息：" + response.getMsg() +
+                        "错误子代码" + response.getSubCode() + "错误子信息：" + response.getSubMsg());
+            }
         }
     }
 
     /**
      * 用户归还成功后，调用发送消息的接口给用户发送归还成功的通知
+     *
      * @param order 订单
      */
     public void sendReturnMessage(Order order) {
@@ -310,13 +318,14 @@ public class AlipayMessageService {
         try {
             response = alipayClient.execute(request);
         } catch (AlipayApiException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
-        if (response.isSuccess()) {
-            //通知成功，不做任何处理
-        } else {
-            logger.error("通知用户归还成功失败，错误代码：" + response.getCode() + "错误信息：" + response.getMsg() +
-                    "错误子代码" + response.getSubCode() + "错误子信息：" + response.getSubMsg());
+        if (response == null || !response.isSuccess()) {
+            logger.error("向用户发送归还成功的消息失败");
+            if (response != null) {
+                logger.error("错误代码：" + response.getCode() + "错误信息：" + response.getMsg() +
+                        "错误子代码" + response.getSubCode() + "错误子信息：" + response.getSubMsg());
+            }
         }
     }
 }
