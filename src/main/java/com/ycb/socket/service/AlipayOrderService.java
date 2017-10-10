@@ -34,24 +34,23 @@ public class AlipayOrderService {
     public void cancelOrder(String orderNo) {
         AlipayClient alipayClient = new DefaultAlipayClient(GlobalConfig.ALIPAY_SERVER_URL, GlobalConfig.ALIPAY_APPID, GlobalConfig.ALIPAY_PRIVATEKEY, GlobalConfig.ALIPAY_FORMAT, GlobalConfig.ALIPAY_CHARSET, GlobalConfig.ALIPAY_ALIPAYPUBLICKEY, GlobalConfig.ALIPAY_SIGNTYPE);
         ZhimaMerchantOrderRentCancelRequest request = new ZhimaMerchantOrderRentCancelRequest();
-        //信用借还的产品码
-        String productCode = GlobalConfig.ALIPAY_PRODUCT_CODE;
 
         Map<String, Object> bizContentMap = new LinkedHashMap<>();
         bizContentMap.put("order_no", orderNo);
-        bizContentMap.put("product_code", productCode);
+        bizContentMap.put("product_code", GlobalConfig.ALIPAY_PRODUCT_CODE);
         request.setBizContent(JsonUtils.writeValueAsString(bizContentMap));
         ZhimaMerchantOrderRentCancelResponse response = null;
         try {
             response = alipayClient.execute(request);
         } catch (AlipayApiException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
-        if (response.isSuccess()) {
-            //取消订单成功，不做任何处理
-        } else {
-            logger.error("信用借还订单取消失败，错误代码：" + response.getCode() + "错误信息：" + response.getMsg() +
-                    "错误子代码" + response.getSubCode() + "错误子信息：" + response.getSubMsg());
+        if (response == null || !response.isSuccess()) {
+            logger.error("信用借还订单取消失败" + orderNo);
+            if (response != null) {
+                logger.error("错误代码：" + response.getCode() + "错误信息：" + response.getMsg() +
+                        "错误子代码" + response.getSubCode() + "错误子信息：" + response.getSubMsg());
+            }
         }
     }
 
@@ -65,25 +64,21 @@ public class AlipayOrderService {
         ZhimaMerchantOrderRentCompleteRequest request = new ZhimaMerchantOrderRentCompleteRequest();
         //获得信用借还订单支付宝的订单编号
         String orderNo = order.getOrderNo();
-        //信用借还的产品码:w1010100000000002858
-        String productCode = GlobalConfig.ALIPAY_PRODUCT_CODE;
-        //物品归还时间	2016-10-01 12:00:00
+        //物品归还时间
         String restoreTime = new SimpleDateFormat("YYYY-MM-dd HH:MM:ss").format(order.getReturnTime());
         /*
         金额类型：
         RENT:租金
-        DAMAGE:赔偿金
          */
         String payAmountType = "RENT";
-        //支付金额	100.00
         //payAmount 需要支付的金额
         String payAmount = order.getUsefee().toString();
-        //restoreShopName 物品归还门店名称,例如肯德基文三路门店
+        //restoreShopName 物品归还门店名称
         String restoreShopName = order.getAddress();
 
         Map<String, Object> bizContentMap = new LinkedHashMap<>();
         bizContentMap.put("order_no", orderNo);
-        bizContentMap.put("product_code", productCode);
+        bizContentMap.put("product_code", GlobalConfig.ALIPAY_PRODUCT_CODE);
         bizContentMap.put("restore_time", restoreTime);
         bizContentMap.put("pay_amount_type", payAmountType);
         bizContentMap.put("pay_amount", payAmount);
@@ -94,15 +89,14 @@ public class AlipayOrderService {
         try {
             response = alipayClient.execute(request);
         } catch (AlipayApiException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
-        if (response.isSuccess()) {
-            System.out.println("调用成功,信用借还订单完结");
-            //在回调中更新订单信息
-        } else {
-            logger.error("信用借还订单完结失败，错误代码：" + response.getCode() + "错误信息：" + response.getMsg() +
-                    "错误子代码" + response.getSubCode() + "错误子信息：" + response.getSubMsg());
+        if (response == null || !response.isSuccess()) {
+            logger.error("信用借还订单完结失败" + orderNo);
+            if (response != null) {
+                logger.error("错误代码：" + response.getCode() + "错误信息：" + response.getMsg() +
+                        "错误子代码" + response.getSubCode() + "错误子信息：" + response.getSubMsg());
+            }
         }
     }
-
 }
