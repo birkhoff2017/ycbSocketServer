@@ -63,7 +63,7 @@ public class AlipayMessageService {
         String session = MD5.getMessageDigest(openid.getBytes());
 
         //点击消息后承接页的地址为用户的借用历史记录，因此将用户的session带上用于获取到用户的订单记录
-        String url = GlobalConfig.ALIPAY_NOTIFY_URL + "/order/getOrderList?session=" + session;
+        String url = GlobalConfig.ALIPAY_NOTIFY_URL + "/rent.html?session="+session;
         //底部链接描述文字
         String actionName = "查看详情";
 
@@ -228,7 +228,7 @@ public class AlipayMessageService {
         String headColor = "#000000";
 
         //点击消息后承接页的地址
-        String url = GlobalConfig.ALIPAY_NOTIFY_URL + "/user.html";
+        String url = GlobalConfig.ALIPAY_NOTIFY_URL + "/oauth/userInfoOauth";
 
         //底部链接描述文字，如“查看详情”
         String actionName = "查看详情";
