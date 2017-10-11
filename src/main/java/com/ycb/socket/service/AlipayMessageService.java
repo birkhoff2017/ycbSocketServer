@@ -22,7 +22,7 @@ import java.util.Map;
 
 /**
  * Created by Huo on 2017/9/21.
- *
+ * <p>
  * 用于在用户借用电池，归还电池，借出失败时向用户发送通知
  */
 @Service
@@ -63,7 +63,7 @@ public class AlipayMessageService {
         String session = MD5.getMessageDigest(openid.getBytes());
 
         //点击消息后承接页的地址为用户的借用历史记录，因此将用户的session带上用于获取到用户的订单记录
-        String url = "http://www.duxinyuan.top/order/getOrderList?session=" + session;
+        String url = GlobalConfig.ALIPAY_NOTIFY_URL + "/order/getOrderList?session=" + session;
         //底部链接描述文字
         String actionName = "查看详情";
 
@@ -156,7 +156,7 @@ public class AlipayMessageService {
 
         //点击消息后承接页的地址为附近充电宝站点列表页，带上return_type的目的是
         //进入附近充电宝站点列表页而不是弹出电池借用成功的弹出框
-        String url = "http://www.duxinyuan.top/loading.html?return_type=test";
+        String url = GlobalConfig.ALIPAY_NOTIFY_URL + "/loading.html?return_type=test";
         //底部链接描述文字，如“查看详情”
         String actionName = "查看详情";
 
@@ -213,9 +213,11 @@ public class AlipayMessageService {
     /**
      * 用户归还成功后，调用发送消息的接口给用户发送归还成功的通知
      *
+     * @param lastTime  用户借用时长
+     * @param useFeeStr 费用
      * @param order 订单
      */
-    public void sendReturnMessage(Order order) {
+    public void sendReturnMessage(String lastTime, String useFeeStr, Order order) {
         AlipayClient alipayClient = new DefaultAlipayClient(GlobalConfig.ALIPAY_SERVER_URL, GlobalConfig.ALIPAY_APPID, GlobalConfig.ALIPAY_PRIVATEKEY, GlobalConfig.ALIPAY_FORMAT, GlobalConfig.ALIPAY_CHARSET, GlobalConfig.ALIPAY_ALIPAYPUBLICKEY, GlobalConfig.ALIPAY_SIGNTYPE);
         AlipayOpenPublicMessageSingleSendRequest request = new AlipayOpenPublicMessageSingleSendRequest();
 
@@ -226,7 +228,7 @@ public class AlipayMessageService {
         String headColor = "#000000";
 
         //点击消息后承接页的地址
-        String url = "http://www.duxinyuan.top/user.html";
+        String url = GlobalConfig.ALIPAY_NOTIFY_URL + "/user.html";
 
         //底部链接描述文字，如“查看详情”
         String actionName = "查看详情";
@@ -246,30 +248,8 @@ public class AlipayMessageService {
         //租用时长
         //keyword3
         String keyword3Color = "#000000";
-        //租用的时间，单位  秒
-        long l = (order.getReturnTime().getTime() - order.getBorrowTime().getTime()) / 1000;
-        //天
-        long days = l / 86400;
-        //小时
-        long hours = l % 86400 / 3600;
-        //分钟
-        long minutes = l % 86400 % 3600 / 60;
-        //秒
-        long seconds = l % 86400 % 3600 % 60;
-        StringBuilder sb = new StringBuilder();
-        if (days > 0) {
-            sb.append(days).append("天");
-        }
-        if (hours > 0) {
-            sb.append(hours).append("小时");
-        }
-        if (minutes > 0) {
-            sb.append(minutes).append("分钟");
-        }
-        if (seconds > 0) {
-            sb.append(seconds).append("秒");
-        }
-        String keyword3Value = sb.toString();
+
+        String keyword3Value = lastTime;
         //订单编号
         //keyword4
         String keyword4Color = "#000000";
@@ -277,7 +257,7 @@ public class AlipayMessageService {
 
         //remark
         String remarkColor = "#32cd32";
-        String remarkValue = "此次租借产生费用" + order.getPrice() + "元。如有疑问，请致电4006290808";
+        String remarkValue = "此次租借产生费用" + useFeeStr + "。如有疑问，请致电4006290808";
 
         Map<String, Object> keyword1 = new LinkedHashMap<>();
         keyword1.put("color", keyword1Color);
