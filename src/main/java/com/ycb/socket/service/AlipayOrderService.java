@@ -14,7 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -58,21 +60,27 @@ public class AlipayOrderService {
      * 在用户归还电池后，调用支付宝的完结订单接口完结订单
      *
      * @param order 订单
+     * @param usefee
      */
-    public void completeOrder(Order order) {
+    public void completeOrder(Order order, BigDecimal usefee) {
         AlipayClient alipayClient = new DefaultAlipayClient(GlobalConfig.ALIPAY_SERVER_URL, GlobalConfig.ALIPAY_APPID, GlobalConfig.ALIPAY_PRIVATEKEY, GlobalConfig.ALIPAY_FORMAT, GlobalConfig.ALIPAY_CHARSET, GlobalConfig.ALIPAY_ALIPAYPUBLICKEY, GlobalConfig.ALIPAY_SIGNTYPE);
         ZhimaMerchantOrderRentCompleteRequest request = new ZhimaMerchantOrderRentCompleteRequest();
         //获得信用借还订单支付宝的订单编号
         String orderNo = order.getOrderNo();
         //物品归还时间
-        String restoreTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(order.getReturnTime());
+        String restoreTime = "";
+        try {
+            restoreTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(order.getReturnTime());
+        }catch (Exception e){
+            restoreTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        }
         /*
         金额类型：
         RENT:租金
          */
         String payAmountType = "RENT";
         //payAmount 需要支付的金额
-        String payAmount = order.getUsefee().toString();
+        String payAmount = usefee.toString();
         //restoreShopName 物品归还门店名称
         String restoreShopName = order.getAddress();
 

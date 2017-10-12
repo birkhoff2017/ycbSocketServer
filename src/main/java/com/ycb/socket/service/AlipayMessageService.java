@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -53,25 +54,17 @@ public class AlipayMessageService {
 
         //支付宝用户编号
         String openid = this.getUserId(order.getCustomerid());
-
-        AlipayClient alipayClient = new DefaultAlipayClient(GlobalConfig.ALIPAY_SERVER_URL, GlobalConfig.ALIPAY_APPID, GlobalConfig.ALIPAY_PRIVATEKEY, GlobalConfig.ALIPAY_FORMAT, GlobalConfig.ALIPAY_CHARSET, GlobalConfig.ALIPAY_ALIPAYPUBLICKEY, GlobalConfig.ALIPAY_SIGNTYPE);
-        AlipayOpenPublicMessageSingleSendRequest request = new AlipayOpenPublicMessageSingleSendRequest();
-
         //顶部色条的色值
         String headColor = "#000000";
-
         String session = MD5.getMessageDigest(openid.getBytes());
-
         //点击消息后承接页的地址为用户的借用历史记录，因此将用户的session带上用于获取到用户的订单记录
-        String url = GlobalConfig.ALIPAY_NOTIFY_URL + "/rent.html?session="+session;
+        String url = GlobalConfig.ALIPAY_NOTIFY_URL + "/rent.html?session=" + session;
         //底部链接描述文字
         String actionName = "查看详情";
-
         //当前文字颜色
         String firstColor = "#000000";
         //模板中占位符的值
         String firstValue = "信用借还，免押金借用充电宝";
-
         //keyword1
         String keyword1Color = "#000000";
         //查询借出商铺的名字
@@ -79,19 +72,21 @@ public class AlipayMessageService {
         map.put("STATIONID", order.getBorrowStation().toString());
         Map<String, Object> shopInfo = orderDao.getStationShopInfo(map);
         String keyword1Value = (String) shopInfo.get("shopName");
-
         //keyword2
         String keyword2Color = "#000000";
-        String keyword2Value = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(order.getBorrowTime());
-
+        String keyword2Value = "";
+        try {
+            keyword2Value = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(order.getBorrowTime());
+        } catch (Exception e) {
+            keyword2Value = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+            logger.error("time problem");
+        }
         //keyword3
         String keyword3Color = "#000000";
         String keyword3Value = order.getOrderid();
-
         //remark
         String remarkColor = "#32cd32";
         String remarkValue = "充电宝自带一根多功能充电线，插头的AB面分别支持苹果/安卓，如插入后没响应，更换另一面即可。";
-
         Map<String, Object> keyword1 = new LinkedHashMap<>();
         keyword1.put("color", keyword1Color);
         keyword1.put("value", keyword1Value);
@@ -122,12 +117,15 @@ public class AlipayMessageService {
         Map<String, Object> bizContentMap = new LinkedHashMap<>();
         bizContentMap.put("to_user_id", openid);
         bizContentMap.put("template", template);
-        request.setBizContent(JsonUtils.writeValueAsString(bizContentMap));
         AlipayOpenPublicMessageSingleSendResponse response = null;
         try {
+            AlipayOpenPublicMessageSingleSendRequest request = new AlipayOpenPublicMessageSingleSendRequest();
+            request.setBizContent(JsonUtils.writeValueAsString(bizContentMap));
+            AlipayClient alipayClient = new DefaultAlipayClient(GlobalConfig.ALIPAY_SERVER_URL, GlobalConfig.ALIPAY_APPID, GlobalConfig.ALIPAY_PRIVATEKEY, GlobalConfig.ALIPAY_FORMAT, GlobalConfig.ALIPAY_CHARSET, GlobalConfig.ALIPAY_ALIPAYPUBLICKEY, GlobalConfig.ALIPAY_SIGNTYPE);
             response = alipayClient.execute(request);
+            logger.info("response" + response.getBody());
         } catch (AlipayApiException e) {
-            logger.error(e.getMessage());
+            logger.error("AlipayClient error"+e.getMessage());
         }
         if (response == null || !response.isSuccess()) {
             logger.error("向用户发送借用成功的消息失败");
@@ -215,7 +213,7 @@ public class AlipayMessageService {
      *
      * @param lastTime  用户借用时长
      * @param useFeeStr 费用
-     * @param order 订单
+     * @param order     订单
      */
     public void sendReturnMessage(String lastTime, String useFeeStr, Order order) {
         AlipayClient alipayClient = new DefaultAlipayClient(GlobalConfig.ALIPAY_SERVER_URL, GlobalConfig.ALIPAY_APPID, GlobalConfig.ALIPAY_PRIVATEKEY, GlobalConfig.ALIPAY_FORMAT, GlobalConfig.ALIPAY_CHARSET, GlobalConfig.ALIPAY_ALIPAYPUBLICKEY, GlobalConfig.ALIPAY_SIGNTYPE);
@@ -244,12 +242,14 @@ public class AlipayMessageService {
         //归还时间
         //keyword2
         String keyword2Color = "#000000";
-        String keyword2Value = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(order.getReturnTime());
+        // 归还时间
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String keyword2Value = sdf.format(new Date());
+
         //租用时长
         //keyword3
         String keyword3Color = "#000000";
 
-        String keyword3Value = lastTime;
         //订单编号
         //keyword4
         String keyword4Color = "#000000";
@@ -267,7 +267,7 @@ public class AlipayMessageService {
         keyword2.put("value", keyword2Value);
         Map<String, Object> keyword3 = new LinkedHashMap<>();
         keyword3.put("color", keyword3Color);
-        keyword3.put("value", keyword3Value);
+        keyword3.put("value", lastTime);
         Map<String, Object> keyword4 = new LinkedHashMap<>();
         keyword4.put("color", keyword4Color);
         keyword4.put("value", keyword4Value);
