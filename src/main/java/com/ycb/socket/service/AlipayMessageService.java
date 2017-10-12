@@ -234,7 +234,7 @@ public class AlipayMessageService {
         //当前文字颜色
         String firstColor = "#000000";
         //模板中占位符的值
-        String firstValue = "";
+        String firstValue = "你已成功归还云充吧充电宝。";
         //归还地点
         //keyword1
         String keyword1Color = "#000000";
@@ -242,18 +242,14 @@ public class AlipayMessageService {
         //归还时间
         //keyword2
         String keyword2Color = "#000000";
-        String keyword2Value = "";
-        try {
-            keyword2Value = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(order.getReturnTime());
-        } catch (Exception e) {
-            keyword2Value = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-            logger.error("time problem");
-        }
+        // 归还时间
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String keyword2Value = sdf.format(new Date());
+
         //租用时长
         //keyword3
         String keyword3Color = "#000000";
 
-        String keyword3Value = lastTime;
         //订单编号
         //keyword4
         String keyword4Color = "#000000";
@@ -261,7 +257,7 @@ public class AlipayMessageService {
 
         //remark
         String remarkColor = "#32cd32";
-        String remarkValue = "此次租借产生费用" + useFeeStr + "。如有疑问，请致电4006290808";
+        String remarkValue = "此次租借产生费用" + useFeeStr + "。如有疑问，请致电400-629-0808";
 
         Map<String, Object> keyword1 = new LinkedHashMap<>();
         keyword1.put("color", keyword1Color);
@@ -271,7 +267,7 @@ public class AlipayMessageService {
         keyword2.put("value", keyword2Value);
         Map<String, Object> keyword3 = new LinkedHashMap<>();
         keyword3.put("color", keyword3Color);
-        keyword3.put("value", keyword3Value);
+        keyword3.put("value", lastTime);
         Map<String, Object> keyword4 = new LinkedHashMap<>();
         keyword4.put("color", keyword4Color);
         keyword4.put("value", keyword4Value);

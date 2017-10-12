@@ -75,10 +75,12 @@ public class ReturnBackHandler implements SocketHandler {
                         // 推送归还成功消息
                         orderService.sendReturnSuccessMessage(lastTime, useFeeStr, backBatteryOrder);
                     } else if (2 == platform) {
-                        //调用支付宝完结订单的接口完结订单
-                        alipayOrderService.completeOrder(borrowOrder);
-                        // 推送归还成功消息
-                        alipayMessageService.sendReturnMessage(lastTime, useFeeStr, backBatteryOrder);
+                        //信用借还完结订单
+                        boolean flag = alipayOrderService.completeOrder(borrowOrder,usefee);
+                        if (flag){
+                            // 推送归还成功消息
+                            alipayMessageService.sendReturnMessage(lastTime, useFeeStr, backBatteryOrder);
+                        }
                     }
                 }
                 // 更新电池表信息

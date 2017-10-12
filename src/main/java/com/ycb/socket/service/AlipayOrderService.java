@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -59,8 +60,9 @@ public class AlipayOrderService {
      * 在用户归还电池后，调用支付宝的完结订单接口完结订单
      *
      * @param order 订单
+     * @param usefee
      */
-    public void completeOrder(Order order) {
+    public boolean completeOrder(Order order, BigDecimal usefee) {
         AlipayClient alipayClient = new DefaultAlipayClient(GlobalConfig.ALIPAY_SERVER_URL, GlobalConfig.ALIPAY_APPID, GlobalConfig.ALIPAY_PRIVATEKEY, GlobalConfig.ALIPAY_FORMAT, GlobalConfig.ALIPAY_CHARSET, GlobalConfig.ALIPAY_ALIPAYPUBLICKEY, GlobalConfig.ALIPAY_SIGNTYPE);
         ZhimaMerchantOrderRentCompleteRequest request = new ZhimaMerchantOrderRentCompleteRequest();
         //获得信用借还订单支付宝的订单编号
@@ -78,7 +80,7 @@ public class AlipayOrderService {
          */
         String payAmountType = "RENT";
         //payAmount 需要支付的金额
-        String payAmount = order.getUsefee().toString();
+        String payAmount = usefee.toString();
         //restoreShopName 物品归还门店名称
         String restoreShopName = order.getAddress();
 
@@ -103,6 +105,8 @@ public class AlipayOrderService {
                 logger.error("错误代码：" + response.getCode() + "错误信息：" + response.getMsg() +
                         "错误子代码" + response.getSubCode() + "错误子信息：" + response.getSubMsg());
             }
+            return false;
         }
+        return true;
     }
 }
