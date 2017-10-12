@@ -64,7 +64,7 @@ public class RentConfirmHandler implements SocketHandler {
                 // 更新订单状态
                 orderService.updateOrderStatus(reqMap.get("ORDERID"), orderStatus, reqMap.get("STATIONID"), reqMap.get("ID"));
                 // 获取借出电池所属订单支付金额
-                Order order = orderService.getPaidFromOrder(reqMap.get("ID"));
+                Order order = orderService.getUpdatedOrderByOrderId(reqMap.get("ORDERID"));
                 // 小程序消息推送
                 if ("1".equals(reqMap.get("STATUS"))) {
                     if (null != order) {
@@ -91,7 +91,6 @@ public class RentConfirmHandler implements SocketHandler {
                         //推送租借失败的消息
                         alipayMessageService.sendErrorMessage(order);
                     }
-
                 }
             }
             messageRes.setMsg("ERRCODE:0;ERRMSG:none;ORDERID:" + reqMap.get("ORDERID") + ";ACK:" + messageReq.getActValue());

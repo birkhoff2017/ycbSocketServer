@@ -61,7 +61,7 @@ public class OrderService {
             FeeStrategy feeEntity = feeStrategyService.getFeeStrategy(order.getFeeSettings());
             String feeStrategy = feeStrategyService.transFeeStrategy(feeEntity);
             String freeTime = feeStrategyService.getFreeTime(feeEntity);
-            String deposit = order.getPrice().toString();
+            String deposit = order.getPaid().toString();
             //使用prepay_id推送消息
             messageService.rentSuccessSendTMessage(formMessage.getOpenid(), formMessage.getFormId(), borrowTime, address,
                     freeTime, deposit, orderid, feeStrategy);
@@ -143,5 +143,9 @@ public class OrderService {
      */
     public Order getBackBatteryOrder(String batteryid) {
         return orderDao.getBackBatteryOrder(batteryid);
+    }
+
+    public Order getUpdatedOrderByOrderId(String orderid) {
+        return orderDao.getUpdatedOrderByOrderId(orderid);
     }
 }

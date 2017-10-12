@@ -18,4 +18,6 @@ public interface OrderDao {
     Order getBackBatteryOrder(String batteryid);
 
     Map<String, Object> getStationShopInfo(Map<String, String> reqMap);
+
+    Order getUpdatedOrderByOrderId(String orderid);
 }
