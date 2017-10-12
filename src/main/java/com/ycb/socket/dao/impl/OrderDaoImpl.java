@@ -148,6 +148,47 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
+    public Order getUpdatedOrderByOrderId(String orderid) {
+        StringBuffer selectSql = new StringBuffer();
+        selectSql.append("SELECT ")
+                .append("t.orderid, ")
+                .append("t.customer, ")
+                .append("t.paid, ")
+                .append("t.borrow_time, ")
+                .append("t.return_time, ")
+                .append("t.usefee, ")
+                .append("t.borrow_station_id, ")
+                .append("t.borrow_station_name address, ")
+                .append("t.platform, ")
+                .append("t.order_no, ")
+                .append("t.alipay_fund_order_no, ")
+                .append("ss.fee_settings ")
+                .append("FROM ycb_mcs_tradelog t ")
+                .append("LEFT JOIN ycb_mcs_shop_station ss ")
+                .append("ON t.borrow_shop_station_id = ss.id ")
+                .append("WHERE t.orderid = ? ");
+        return dao.queryResult(OpResult.create(selectSql, bizName, rs -> {
+            Order order = null;
+            while (rs.next()) {
+                order = new Order();
+                order.setOrderid(rs.getString("orderid"));
+                order.setCustomerid(rs.getLong("customer"));
+                order.setPaid(rs.getBigDecimal("paid"));
+                order.setBorrowTime(rs.getTimestamp("borrow_time"));
+                order.setReturnTime(rs.getTimestamp("return_time"));
+                order.setFeeSettings(rs.getLong("fee_settings"));
+                order.setAddress(rs.getString("address"));
+                order.setUsefee(rs.getBigDecimal("usefee"));
+                order.setPlatform(rs.getInt("platform"));
+                order.setOrderNo(rs.getString("order_no"));
+                order.setAlipayFundOrderNo(rs.getString("alipay_fund_order_no"));
+                order.setBorrowStation(rs.getLong("borrow_station_id"));
+            }
+            return order;
+        }).addParams(orderid));
+    }
+
+    @Override
     public Order getBackBatteryOrder(String batteryid) {
         StringBuffer selectSql = new StringBuffer();
         selectSql.append("SELECT ")
