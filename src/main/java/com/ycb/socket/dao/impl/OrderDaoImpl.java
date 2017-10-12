@@ -62,6 +62,7 @@ public class OrderDaoImpl implements OrderDao {
                 .append("t.borrow_time, ")
                 .append("t.return_time, ")
                 .append("t.usefee, ")
+                .append("t.borrow_station_id, ")
                 .append("t.borrow_station_name address, ")
                 .append("t.platform, ")
                 .append("t.order_no, ")
@@ -87,6 +88,7 @@ public class OrderDaoImpl implements OrderDao {
                 order.setPlatform(rs.getInt("platform"));
                 order.setOrderNo(rs.getString("order_no"));
                 order.setAlipayFundOrderNo(rs.getString("alipay_fund_order_no"));
+                order.setBorrowStation(rs.getLong("borrow_station_id"));
             }
             return order;
         }).addParams(id));

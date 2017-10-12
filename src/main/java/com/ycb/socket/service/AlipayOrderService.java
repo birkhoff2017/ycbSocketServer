@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -65,7 +66,12 @@ public class AlipayOrderService {
         //获得信用借还订单支付宝的订单编号
         String orderNo = order.getOrderNo();
         //物品归还时间
-        String restoreTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(order.getReturnTime());
+        String restoreTime = "";
+        try {
+            restoreTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(order.getReturnTime());
+        }catch (Exception e){
+            restoreTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        }
         /*
         金额类型：
         RENT:租金

@@ -36,10 +36,10 @@ public class Order implements Serializable {
     private Long returnShop;
 
     //@MetaData("借出设备id")
-    private Station borrowStation;
+    private Long borrowStation;
 
     //@MetaData("归还设备id")
-    private Station returnStation;
+    private Long returnStation;
 
     //@MetaData("借出商铺站点id")
     private Long borrowShopStation;
@@ -147,19 +147,19 @@ public class Order implements Serializable {
         this.returnShop = returnShop;
     }
 
-    public Station getBorrowStation() {
+    public Long getBorrowStation() {
         return borrowStation;
     }
 
-    public void setBorrowStation(Station borrowStation) {
+    public void setBorrowStation(Long borrowStation) {
         this.borrowStation = borrowStation;
     }
 
-    public Station getReturnStation() {
+    public Long getReturnStation() {
         return returnStation;
     }
 
-    public void setReturnStation(Station returnStation) {
+    public void setReturnStation(Long returnStation) {
         this.returnStation = returnStation;
     }
 
