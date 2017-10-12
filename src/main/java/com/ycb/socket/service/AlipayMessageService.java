@@ -234,7 +234,7 @@ public class AlipayMessageService {
         //当前文字颜色
         String firstColor = "#000000";
         //模板中占位符的值
-        String firstValue = "";
+        String firstValue = "你已成功归还云充吧充电宝。";
         //归还地点
         //keyword1
         String keyword1Color = "#000000";
@@ -257,7 +257,7 @@ public class AlipayMessageService {
 
         //remark
         String remarkColor = "#32cd32";
-        String remarkValue = "此次租借产生费用" + useFeeStr + "。如有疑问，请致电4006290808";
+        String remarkValue = "此次租借产生费用" + useFeeStr + "。如有疑问，请致电400-629-0808";
 
         Map<String, Object> keyword1 = new LinkedHashMap<>();
         keyword1.put("color", keyword1Color);

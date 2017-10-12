@@ -62,7 +62,7 @@ public class AlipayOrderService {
      * @param order 订单
      * @param usefee
      */
-    public void completeOrder(Order order, BigDecimal usefee) {
+    public boolean completeOrder(Order order, BigDecimal usefee) {
         AlipayClient alipayClient = new DefaultAlipayClient(GlobalConfig.ALIPAY_SERVER_URL, GlobalConfig.ALIPAY_APPID, GlobalConfig.ALIPAY_PRIVATEKEY, GlobalConfig.ALIPAY_FORMAT, GlobalConfig.ALIPAY_CHARSET, GlobalConfig.ALIPAY_ALIPAYPUBLICKEY, GlobalConfig.ALIPAY_SIGNTYPE);
         ZhimaMerchantOrderRentCompleteRequest request = new ZhimaMerchantOrderRentCompleteRequest();
         //获得信用借还订单支付宝的订单编号
@@ -105,6 +105,8 @@ public class AlipayOrderService {
                 logger.error("错误代码：" + response.getCode() + "错误信息：" + response.getMsg() +
                         "错误子代码" + response.getSubCode() + "错误子信息：" + response.getSubMsg());
             }
+            return false;
         }
+        return true;
     }
 }
