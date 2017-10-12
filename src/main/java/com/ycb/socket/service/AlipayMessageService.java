@@ -242,16 +242,14 @@ public class AlipayMessageService {
         //归还时间
         //keyword2
         String keyword2Color = "#000000";
-        String keyword2Value = "";
         // 归还时间
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        keyword2Value = sdf.format(new Date());
+        String keyword2Value = sdf.format(new Date());
 
         //租用时长
         //keyword3
         String keyword3Color = "#000000";
 
-        String keyword3Value = lastTime;
         //订单编号
         //keyword4
         String keyword4Color = "#000000";
@@ -269,7 +267,7 @@ public class AlipayMessageService {
         keyword2.put("value", keyword2Value);
         Map<String, Object> keyword3 = new LinkedHashMap<>();
         keyword3.put("color", keyword3Color);
-        keyword3.put("value", keyword3Value);
+        keyword3.put("value", lastTime);
         Map<String, Object> keyword4 = new LinkedHashMap<>();
         keyword4.put("color", keyword4Color);
         keyword4.put("value", keyword4Value);
