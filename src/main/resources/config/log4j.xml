@@ -24,7 +24,7 @@
         </filter>
     </appender>
     <appender name="FILE" class="org.apache.log4j.RollingFileAppender">
-        <param name="File" value="/data/logs/ycbSocketServer/log.log"/>
+        <param name="File" value="/data/logs/socketInfo.log"/>
         <param name="Threshold" value="INFO"/>
         <param name="ImmediateFlush" value="true"></param>
         <param name="MaxFileSize" value="100MB"/>
@@ -34,7 +34,7 @@
         </layout>
     </appender>
     <appender name="error.file" class="org.apache.log4j.RollingFileAppender">
-        <param name="File" value="/data/logs/ycbSocketServer/error.log"/>
+        <param name="File" value="/data/logs/socketError.log"/>
         <param name="Threshold" value="WARN"/>
         <param name="ImmediateFlush" value="true"></param>
         <param name="MaxFileSize" value="100MB"/>
