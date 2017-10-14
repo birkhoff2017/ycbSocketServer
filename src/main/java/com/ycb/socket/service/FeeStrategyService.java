@@ -58,20 +58,20 @@ public class FeeStrategyService {
      * @return
      */
     public BigDecimal calUseFee(FeeStrategy feeStrategy, Long duration) {
- 		//将计算出来的费用初始化为0
+        //将计算出来的费用初始化为0
         BigDecimal useFee = BigDecimal.ZERO;
-		//计算免费时长
+        //计算免费时长
         Long fixedTime = feeStrategy.getFixedTime() * feeStrategy.getFixedUnit();
         //计算意外借出时长
         Long freeTime = feeStrategy.getFreeTime() * feeStrategy.getFreeUnit();
-		//计算最长收费时间
+        //计算最长收费时间
         Long maxFeeTime = feeStrategy.getMaxFeeTime() * feeStrategy.getMaxFeeUnit();
         if (duration < freeTime) {
             // 如果租借时长小于意外借出时间，则不计费用
             return useFee;
         } else if (duration > maxFeeTime) {
             // 租借时长大于最高收费时长，按最高收费
-			//一天的秒数
+            //一天的秒数
             Long daySeconds = Long.valueOf(24 * 60 * 60);
             // 计算借出总天数
             Integer days = Math.toIntExact(duration / daySeconds);
@@ -93,7 +93,7 @@ public class FeeStrategyService {
                 useFee = feeStrategy.getFixed();
             } else {
                 useFee = feeStrategy.getFixed().
-                        add(feeStrategy.getFee().multiply(BigDecimal.valueOf((expirTime / feeStrategy.getFeeUnit()))));
+                        add(feeStrategy.getFee().multiply(BigDecimal.valueOf(1L + (expirTime / feeStrategy.getFeeUnit()))));
                 BigDecimal maxFee = feeStrategy.getMaxFee();
                 if (useFee.compareTo(maxFee) > 0) {
                     return maxFee;
