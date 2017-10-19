@@ -21,8 +21,8 @@ public class SyncSettingEvent implements SocketHandler {
             Map<String, String> reqMap = StringUtils.str2Map(messageReq.getContent());
             messageRes.setMsg("TIME:" +
                     System.currentTimeMillis() / 1000
-                    + ";DOMAIN:pzzhuhui.top;IP:39.108.14.135;PORT:54589;" +
-                    "CHECKUPDATEDELAY:1;SOFT_VER:" + reqMap.get("SOFT_VER") + ";FILE_NAME:null;HEATBEAT:30");
+                    + ";DOMAIN:"+reqMap.get("DOMAIN")+";IP:"+reqMap.get("IP")+";PORT:"+reqMap.get("PORT")+";" +
+                    "CHECKUPDATEDELAY:1;SOFT_VER:" + reqMap.get("SOFT_VER") + ";FILE_NAME:null;HEATBEAT:"+reqMap.get("HEATBEAT"));
         } catch (Exception e) {
             logger.error(e.getMessage());
             messageRes.setMsg("ERRCODE:0;ERRMSG:" + e.getMessage() + ";ACK:" + messageReq.getActValue());
