@@ -30,7 +30,7 @@ public class SyncSettingHandler implements SocketHandler {
             Station station = stationService.findStationInfo(reqMap.get("STATIONID"));
             messageRes.setMsg("TIME:" +
                     System.currentTimeMillis() / 1000
-                    + ";DOMAIN:pzzhuhui.top;IP:" + map.get("IP") + ";PORT:" + map.get("PORT") + ";" +
+                    + ";DOMAIN:https://x.yunchongba.com;IP:" + map.get("IP") + ";PORT:" + map.get("PORT") + ";" +
                     "CHECKUPDATEDELAY:1;SOFT_VER:" + reqMap.get("SOFT_VER") + ";FILE_NAME:null;HEATBEAT:" + station.getHeartCycle());
         } catch (Exception e) {
             logger.error(e.getMessage());
