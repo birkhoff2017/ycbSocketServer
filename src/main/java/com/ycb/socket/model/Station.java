@@ -45,6 +45,26 @@ public class Station implements Serializable {
     // @MetaData("同步时间")
     private Date syncTime;
 
+    public Integer getSoftVer() {
+        return softVer;
+    }
+
+    public void setSoftVer(Integer softVer) {
+        this.softVer = softVer;
+    }
+
+    private Integer heartCycle;
+
+    private Integer softVer;
+
+    public Integer getHeartCycle() {
+        return heartCycle;
+    }
+
+    public void setHeartCycle(Integer heartCycle) {
+        this.heartCycle = heartCycle;
+    }
+
     public Long getId() {
         return id;
     }

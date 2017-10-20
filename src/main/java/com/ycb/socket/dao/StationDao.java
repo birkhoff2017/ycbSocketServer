@@ -1,5 +1,7 @@
 package com.ycb.socket.dao;
 
+import com.ycb.socket.model.Station;
+
 import java.util.Map;
 
 /**
@@ -19,4 +21,10 @@ public interface StationDao {
     void updateStationFromBatterySync(Map<String, String> reqMap);
 
     void updateNetStatusById(String stationid);
+
+    String findSyncSettingByStationid(String stationid);
+
+    String getSecondaryValue(String key);
+
+    Station findStationInfo(String stationid);
 }

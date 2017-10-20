@@ -3,6 +3,7 @@ package com.ycb.socket.handler;
 import com.ycb.socket.NettyServerStart;
 import com.ycb.socket.message.MessageReq;
 import com.ycb.socket.message.MessageRes;
+import com.ycb.socket.model.Station;
 import com.ycb.socket.service.StationService;
 import com.ycb.socket.utils.StringUtils;
 import org.slf4j.Logger;
@@ -24,10 +25,13 @@ public class SyncSettingHandler implements SocketHandler {
             StationService stationService = NettyServerStart.factory.getBean(StationService.class);
             Map<String, String> reqMap = StringUtils.str2Map(messageReq.getContent());
             stationService.updateSyncSetting(reqMap);
+            //查询出同步设置的IP和port
+            Map<String, String> map = stationService.findSyncSettingByStationid(reqMap.get("STATIONID"));
+            Station station = stationService.findStationInfo(reqMap.get("STATIONID"));
             messageRes.setMsg("TIME:" +
                     System.currentTimeMillis() / 1000
-                    + ";DOMAIN:"+reqMap.get("DOMAIN")+";IP:"+reqMap.get("IP")+";PORT:"+reqMap.get("PORT")+";" +
-                    "CHECKUPDATEDELAY:1;SOFT_VER:" + reqMap.get("SOFT_VER") + ";FILE_NAME:null;HEATBEAT:"+reqMap.get("HEATBEAT"));
+                    + ";DOMAIN:pzzhuhui.top;IP:" + map.get("IP") + ";PORT:" + map.get("PORT") + ";" +
+                    "CHECKUPDATEDELAY:1;SOFT_VER:" + reqMap.get("SOFT_VER") + ";FILE_NAME:null;HEATBEAT:" + station.getHeartCycle());
         } catch (Exception e) {
             logger.error(e.getMessage());
             messageRes.setMsg("ERRCODE:0;ERRMSG:" + e.getMessage() + ";ACK:" + messageReq.getActValue());

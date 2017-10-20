@@ -1,6 +1,7 @@
 package com.ycb.socket.dao.impl;
 
 import com.ycb.socket.dao.StationDao;
+import com.ycb.socket.model.Station;
 import com.zipeiyi.xpower.dao.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -175,6 +176,37 @@ public class StationDaoImpl implements StationDao {
                 .append("WHERE ")
                 .append("sid = ? ");
         return dao.queryUniq(new DefaultOpUniq<String>(sql, bizName).setMapper((resultSet, i) -> resultSet.getString("usable_battery")).addParams(stationid));
+    }
+
+    @Override
+    public String findSyncSettingByStationid(String stationid) {
+        StringBuffer sql = new StringBuffer();
+        sql.append("SELECT sync_setting from ycb_mcs_station WHERE sid = ?");
+        return dao.queryUniq(new DefaultOpUniq<String>(sql, bizName).setMapper((resultSet, i) -> resultSet.getString("sync_setting")).addParams(stationid));
+    }
+
+    @Override
+    public String getSecondaryValue(String key) {
+        StringBuffer sql = new StringBuffer();
+        sql.append("SELECT secondaryValue FROM sys_DataDict WHERE parent_id = '58' AND primaryKey  = ?");
+        return dao.queryUniq(new DefaultOpUniq<String>(sql, bizName).setMapper((resultSet, i) -> resultSet.getString("secondaryValue")).addParams(key));
+    }
+
+    @Override
+    public Station findStationInfo(String stationid) {
+        StringBuffer selectSql = new StringBuffer();
+        selectSql.append("SELECT device_ver,heartbeat_rate,heart_cycle,soft_ver from ycb_mcs_station WHERE sid = ? ");
+        return dao.queryResult(OpResult.create(selectSql, bizName, rs -> {
+            Station station = null;
+            while (rs.next()) {
+                station = new Station();
+                station.setDeviceVer(rs.getInt("device_ver"));
+                station.setHeartbeatRate(rs.getInt("heartbeat_rate"));
+                station.setHeartCycle(rs.getInt("heart_cycle"));
+                station.setSoftVer(rs.getInt("soft_ver"));
+            }
+            return station;
+        }).addParams(stationid));
     }
 
 }
