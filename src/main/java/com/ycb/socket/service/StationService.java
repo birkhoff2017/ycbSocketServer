@@ -2,12 +2,12 @@ package com.ycb.socket.service;
 
 import com.ycb.socket.dao.StationDao;
 import com.ycb.socket.model.Station;
+import com.ycb.socket.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -72,12 +72,7 @@ public class StationService {
             syncIpAndPort = "ip:39.108.14.135;port:54589";
         }
         //syncIpAndPort格式为：ip:127.0.0.1;port:8000
-        String[] split = syncIpAndPort.split(";");
-        String ip = split[0].split(":")[1];
-        String port = split[1].split(":")[1];
-        Map<String, String> map = new LinkedHashMap<>();
-        map.put("IP", ip);
-        map.put("PORT", port);
+        Map<String, String> map = StringUtils.str2Map(syncIpAndPort);
         return map;
     }
 
