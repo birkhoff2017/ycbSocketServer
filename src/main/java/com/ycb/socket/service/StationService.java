@@ -68,7 +68,7 @@ public class StationService {
             syncIpAndPort = this.stationDao.getSecondaryValue(syncSetting.toString());
         }
         //当设备没有设置同步策略并且字典表中也没有默认策略时，采用线上的服务器
-        if (null == syncIpAndPort && "".equals(syncIpAndPort)) {
+        if (null == syncIpAndPort || "".equals(syncIpAndPort)) {
             syncIpAndPort = "ip:39.108.14.135;port:54589";
         }
         //syncIpAndPort格式为：ip:127.0.0.1;port:8000
